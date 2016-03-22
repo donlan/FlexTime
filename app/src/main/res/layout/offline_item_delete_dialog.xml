@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/circle_rect_white_r0"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20.0dip"
+        android:layout_marginRight="20.0dip"
+        android:layout_marginTop="18.0dip"
+        android:gravity="center"
+        android:text="您确定删除此条离线图忆吗？"
+        android:textColor="@color/md_grey_800"
+        android:textSize="@dimen/text_size_16" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="18.0dip"
+        android:layout_marginTop="15.0dip"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/offline_dialog_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minWidth="80.0dip"
+            android:padding="8.0dip"
+            android:text="取消"
+            android:textSize="@dimen/text_size_17" />
+
+        <View
+            android:layout_width="1.0px"
+            android:layout_height="fill_parent"
+            android:background="@color/md_grey_50" />
+
+        <TextView
+            android:id="@+id/offline_dialog_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minWidth="80.0dip"
+            android:padding="8.0dip"
+            android:text="删除"
+            android:textColor="@color/md_red_900"
+            android:textSize="@dimen/text_size_17" />
+    </LinearLayout>
+</LinearLayout>

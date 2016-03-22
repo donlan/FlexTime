@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/md_white_1000"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/colorPrimary"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/user_head"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="20dp"
+            android:src="@mipmap/default_avater" />
+
+        <TextView
+            android:id="@+id/user_info"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:textColor="@color/md_green_100"
+            android:textSize="@dimen/text_size_16" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:drawableLeft="@mipmap/dot_grey"
+            android:gravity="center"
+            android:text="状态"
+            android:textSize="18sp" />
+
+
+        <RadioGroup
+            android:id="@+id/status_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:orientation="horizontal">
+
+
+            <RadioButton
+                android:id="@+id/status_good"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="状态倍棒" />
+
+            <RadioButton
+                android:id="@+id/status_bad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="不在状态" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="日程模式"
+        android:textSize="18sp" />
+
+    <RadioGroup
+        android:id="@+id/mode_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/mode_work"
+            android:layout_width="@dimen/size_60"
+            android:layout_height="@dimen/size_60"
+            android:background="@drawable/check_circle_yellow_stroke"
+            android:button="@null"
+            android:gravity="center"
+            android:text="工作\n模式"
+            android:textColor="@color/md_white_1000"
+            android:textSize="18sp" />
+
+
+        <RadioButton
+            android:id="@+id/mode_normal"
+            android:layout_width="@dimen/size_60"
+            android:layout_height="@dimen/size_60"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/check_circle_yellow_stroke"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:text="休闲\n模式"
+            android:textColor="@color/md_white_1000"
+            android:textSize="18sp" />
+
+        <RadioButton
+            android:id="@+id/mode_busy"
+            android:layout_width="@dimen/size_60"
+            android:layout_height="@dimen/size_60"
+            android:background="@drawable/check_circle_yellow_stroke"
+            android:button="@null"
+            android:gravity="center"
+            android:text="忙碌\n模式"
+            android:textColor="@color/md_white_1000"
+            android:textSize="18sp" />
+    </RadioGroup>
+
+    <View
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/primary_3"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:rowCount="3">
+
+            <TextView
+                android:id="@+id/drawer_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/click_bg"
+                android:drawableLeft="@mipmap/dot_grey"
+                android:drawablePadding="16dp"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:text="设置"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/drawer_statistic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:drawableLeft="@mipmap/dot_grey"
+                android:drawablePadding="16dp"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:text="个人统计"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/drawer_sync"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:drawableLeft="@mipmap/dot_grey"
+                android:drawablePadding="16dp"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:text="同步"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/drawer_offline_map"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:drawableLeft="@mipmap/dot_grey"
+                android:drawablePadding="16dp"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:text="离线地图"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/drawer_reset_weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:drawableLeft="@mipmap/dot_grey"
+                android:drawablePadding="16dp"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:text="权重因子"
+                android:textSize="18sp" />
+        </GridLayout>
+
+    </ScrollView>
+</LinearLayout>

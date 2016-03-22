@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/md_grey_300"
+    android:orientation="vertical">
+
+    <include layout="@layout/bar" />
+    
+    <LinearLayout
+        android:id="@+id/setting_alert_sound"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:background="@drawable/click_bg"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        
+        <TextView
+            android:drawableLeft="@mipmap/dot_grey"
+            android:drawablePadding="16dp"
+            android:text="提示声音"
+            android:textSize="18sp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+        <TextView
+            android:background="@mipmap/arrow_right_no_line"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="1dp"
+        android:id="@+id/setting_alert_set_delay"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:background="@drawable/click_bg"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:drawableLeft="@mipmap/dot_grey"
+            android:drawablePadding="16dp"
+            android:text="日程提醒间隔"
+            android:textSize="18sp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+        <TextView
+            android:background="@mipmap/arrow_right_no_line"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="1dp"
+        android:id="@+id/setting_set_todo_level"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:background="@drawable/click_bg"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:drawableLeft="@mipmap/dot_grey"
+            android:drawablePadding="16dp"
+            android:text="日程梯度"
+            android:textSize="18sp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+        <TextView
+            android:background="@mipmap/arrow_right_no_line"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/bar"/>
+
+
+    <TextView
+        android:id="@+id/todo_level_text1"
+        android:layout_marginTop="30dp"
+        android:textSize="18sp"
+        android:gravity="start"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:text="@string/todo_level1_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <SeekBar
+        android:id="@+id/todo_level_seekBar1"
+        android:layout_marginTop="20dp"
+        android:progress="20"
+        android:max="100"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/todo_level_text2"
+        android:layout_marginTop="30dp"
+        android:textSize="18sp"
+        android:gravity="start"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:text="@string/todo_level2_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <SeekBar
+        android:id="@+id/todo_level_seekBar2"
+        android:progress="20"
+        android:max="100"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:textSize="14sp"
+        android:gravity="start"
+        android:padding="10dp"
+        android:text="第一梯队中的日程将是最应该的完成的，设置的数值越大，第一梯队可容纳的日程越多，自动提醒也会多；第二梯队是第一梯队的后备，通常情况下无需过多关心。"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

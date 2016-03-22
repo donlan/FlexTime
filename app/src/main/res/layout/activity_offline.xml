@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/common_toolbar" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="40.0dip"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10.0dip"
+            android:paddingRight="10.0dip"
+            android:text="@string/search_offline_city" />
+
+        <EditText
+            android:id="@+id/searchName"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:background="@drawable/circle_rect_alph_white"
+            android:hint="搜索城市"
+            android:minWidth="100.0dip"
+            android:textSize="@dimen/text_size_16" />
+
+        <TextView
+            android:layout_width="30.0dip"
+            android:layout_height="30.0dip"
+            android:layout_gravity="center"
+            android:layout_marginLeft="8.0dip"
+            android:background="@drawable/search"
+            android:gravity="center"
+            android:onClick="search" />
+        <ProgressBar
+            android:visibility="gone"
+            android:id="@+id/search_pro"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:indeterminate="false"
+            android:indeterminateDuration="300"
+            android:indeterminateDrawable="@drawable/refresh_progress_bar"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/offline_download_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="50.0dip"
+        android:layout_marginTop="10.0dip"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:textColor="@color/md_white_1000"
+            android:text="开始"
+            android:id="@+id/start"
+            android:layout_width="45.0dip"
+            android:layout_height="45.0dip"
+            android:layout_marginLeft="13.0dip"
+            android:layout_marginRight="13.0dip"
+            android:background="@drawable/circle_green"
+            android:onClick="startDown" />
+
+        <Button
+            android:textColor="@color/md_white_1000"
+            android:text="停止"
+            android:id="@+id/stop"
+            android:layout_width="45.0dip"
+            android:layout_height="45.0dip"
+            android:background="@drawable/circle_rect_blue"
+            android:onClick="pauseDown" />
+
+        <Button
+            android:textColor="@color/md_white_1000"
+            android:text="删除"
+            android:id="@+id/del"
+            android:layout_width="45.0dip"
+            android:layout_height="45.0dip"
+            android:layout_marginLeft="13.0dip"
+            android:layout_marginRight="13.0dip"
+            android:background="@drawable/circle_rect_red"
+            android:onClick="cancelDown" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/city_list"
+        android:layout_width="fill_parent"
+        android:layout_height="50.0dip"
+        android:layout_marginTop="10.0dip"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/clButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10.0dip"
+            android:layout_marginRight="10.0dip"
+            android:layout_weight="1.0"
+            android:background="@drawable/circle_rect_red"
+            android:onClick="clickCityListButton"
+            android:padding="10.0dip"
+            android:text="城市列表"
+            android:textColor="@color/md_brown_900" />
+
+        <Button
+            android:id="@+id/localButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10.0dip"
+            android:layout_marginRight="10.0dip"
+            android:layout_weight="1.0"
+            android:background="@drawable/circle_rect_green"
+            android:onClick="clickLocalMapListButton"
+            android:padding="10.0dip"
+            android:text="下载管理"
+            android:textColor="@color/md_brown_900" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/citylist_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/allcitylist"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/localmap_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="已下载城市 " />
+
+        <ListView
+            android:id="@+id/localmaplist"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>

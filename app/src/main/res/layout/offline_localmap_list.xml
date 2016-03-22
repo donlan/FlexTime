@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    android:padding="10.0dip">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:text="已下载城市 " />
+
+    <TextView
+        android:id="@+id/update"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:text=""
+        android:textColor="#ffff0000" />
+
+    <TextView
+        android:id="@+id/ratio"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:text="" />
+
+    <Button
+        android:id="@+id/display"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:background="@drawable/circle_rect_blue"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:text="查看" />
+
+    <Button
+        android:id="@+id/remove"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:background="@drawable/circle_rect_red"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:text="删除" />
+</LinearLayout>

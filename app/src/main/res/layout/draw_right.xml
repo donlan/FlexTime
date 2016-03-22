@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/md_white_1000"
+    android:gravity="right"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/md_green_500"
+        android:gravity="center"
+        android:text="过期日程"
+        android:textColor="@color/md_white_1000"
+        android:textSize="18sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/outTime_recycleList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

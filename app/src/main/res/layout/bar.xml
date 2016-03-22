@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/left"
+        android:layout_width="?attr/actionBarSize"
+        android:layout_height="?attr/actionBarSize"
+        android:gravity="center"
+        android:text="返回"
+        android:textColor="@color/md_white_1000"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="?attr/actionBarSize"
+        android:layout_marginRight="?attr/actionBarSize"
+        android:gravity="center"
+        android:textColor="@color/md_white_1000"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/right"
+        android:layout_width="?attr/actionBarSize"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:text="完成"
+        android:textColor="@color/md_white_1000"
+        android:textSize="18sp" />
+</RelativeLayout>

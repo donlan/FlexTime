@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/circle_rect_white_stro4"
+    android:orientation="vertical">
+
+    <com.baidu.mapapi.map.MapView
+        android:id="@+id/bmapView"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:clickable="true" />
+
+    <EditText
+        android:id="@+id/addTodo_mapDes"
+        android:singleLine="true"
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:textColor="@color/md_grey_800"
+        android:background="@color/md_white_1000"
+        android:gravity="center"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:textColorHint="@color/md_grey_700"
+        android:hint="长按地图可以标记目的地哟"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/addTodo_backUp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="返回"
+        android:textSize="18sp"
+        android:textColor="@color/md_white_1000"
+        android:layout_gravity="bottom"
+        android:background="@color/md_yellow_700" />
+</FrameLayout>

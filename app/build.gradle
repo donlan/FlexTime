@@ -1,0 +1,45 @@
+apply plugin: 'com.android.application'
+repositories {
+    flatDir {
+        dir 'libs'
+    }
+}
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
+
+    defaultConfig {
+        applicationId "dong.lan.flextime"
+        minSdkVersion 14
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.1.0'
+    compile 'com.android.support:design:23.1.0'
+    compile 'de.greenrobot:eventbus:2.2.1'
+    compile files('libs/BmobSDK_V3.4.5_1111.jar')
+    compile files('libs/okhttp-2.4.0.jar')
+    compile files('libs/okio-1.4.0.jar')
+    compile files('libs/locSDK_6.13.jar')
+    compile files('libs/baidumapapi_base_v3_6_1.jar')
+    compile files('libs/baidumapapi_cloud_v3_6_1.jar')
+    compile files('libs/baidumapapi_map_v3_6_1.jar')
+    compile files('libs/baidumapapi_radar_v3_6_1.jar')
+    compile files('libs/baidumapapi_search_v3_6_1.jar')
+    compile files('libs/baidumapapi_util_v3_6_1.jar')
+    compile files('libs/butterknife-7.0.1.jar')
+    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+    compile files('libs/umeng-update-v2.7.0.jar')
+}

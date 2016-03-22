@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@color/md_green_100"
+    >
+
+
+    <TextView
+        android:textSize="18sp"
+        android:gravity="center"
+        android:text="@string/label"
+        android:layout_gravity="center"
+        android:id="@+id/welcome_logo"
+        android:drawableTop="@mipmap/logo"
+        android:drawablePadding="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/app_name" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/welcome_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+</FrameLayout>

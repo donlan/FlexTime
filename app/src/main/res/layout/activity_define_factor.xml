@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="20dp"
+    android:background="@null"
+    >
+
+    <TextView
+        android:drawablePadding="12dp"
+        android:drawableLeft="@mipmap/dot_grey"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="自定义紧急性因子"
+        android:textSize="@dimen/text_size_16" />
+
+    <SeekBar
+        android:id="@+id/defineUrgent"
+        android:max="10"
+        android:progress="3"
+        android:layout_marginTop="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <TextView
+        android:drawablePadding="12dp"
+        android:drawableLeft="@mipmap/dot_grey"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="自定义重要性因子"
+        android:textSize="@dimen/text_size_16" />
+
+    <SeekBar
+        android:id="@+id/defineImportance"
+        android:max="10"
+        android:progress="5"
+        android:layout_marginTop="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/defineDone"
+        android:text="生效"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textColor="@color/md_white_1000"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/circle_rect_red"
+        android:layout_width="match_parent"
+        android:layout_height="45dp" />
+
+</LinearLayout>

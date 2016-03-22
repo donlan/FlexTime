@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="20dp"
+    >
+
+    <TextView
+        android:textSize="20sp"
+        android:gravity="center"
+        android:text="设置估计完成时长"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+    <NumberPicker
+        android:id="@+id/needTimeDay"
+        android:background="@drawable/circle_rect_white_stro4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:text="天"
+        android:layout_margin="10dp"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <NumberPicker
+        android:id="@+id/needTimeHours"
+        android:background="@drawable/circle_rect_white_stro4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:text="小时"
+        android:layout_margin="10dp"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <NumberPicker
+        android:id="@+id/needTimeMinute"
+        android:background="@drawable/circle_rect_white_stro4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:text="分钟"
+        android:layout_margin="10dp"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/needTimeDone"
+        android:layout_marginTop="16dp"
+        android:text="完成"
+        android:gravity="center"
+        android:textColor="@color/md_white_1000"
+        android:textSize="@dimen/text_size_17"
+        android:background="@drawable/circle_rect_green"
+        android:layout_width="100dp"
+        android:layout_height="45dp" />
+</LinearLayout>
