@@ -1,29 +1,28 @@
 package dong.lan.flextime.dao;
 
 /**
- * Created by 梁桂栋 on 2015/12/7.
+ * 项目：FlexTime
+ * 作者：梁桂栋
+ * 日期： 3/26/2016  11:23.
  */
-public class ToDoDao {
-    public static final String COLUMN_TABLE_NAME = "TODO";
-    public static final String COLUMN_USERNAME = "username";
-    public static final String COLUMN_INFO = "info";
-    public static final String COLUMN_FINISH_TIME = "finish_time";
-    public static final String COLUMN_DEADLINE = "deadline";
-    public static final String COLUMN_START_TIME = "start_time";
-    public static final String COLUMN_LEVEL = "level";
-    public static final String COLUMN_LAT = "lat";
-    public static final String COLUMN_LNG = "lng";
-    public static final String COLUMN_LOC = "loc";
-    public static final String COLUMN_WEIGHT = "weight";
-    public static final String COLUMN_DONE_ONTIME = "on_time";
-    public static final String COLUMN_CREATE_TIME = "createAt";
-    public static final String COLUMN_OBJECT_ID = "objectID";
-    public static final String COLUMN_CONTINUE_DO = "continueDo";
-    public static final String COLUMN_PERCONTINUE_TIME = "perContinueTime";
-    public static final String COLUMN_LAST_DO_TIME = "timeCount";
-    public static final String COLUMN_REMIND = "remind";
-    public static final String COLUMN_IMPORTANCE = "importance";
-    public static final String COLUMN_URGENT = "urgent";
-    public static final String COLUMN_NEED_TIME = "needTime";
-    public static final String COLUMN_STATUS = "status";
+public class TodoDao {
+
+    public static final int TYPE_SINGLE=1;
+    public static final int TYPE_MUTIL=2;
+    public static final int TYPE_ORDER=3;
+
+    public static final int FLAG_FINISH=0;
+    public static final int FLAG_ON=1;
+    public static final int FLAG_TIME_OUT=2;
+    public static final int FLAG_UPDATE = 3;
+    public static final int FLAG_SWAP = 4;
+    public static final int FLAG_DONE = 5;
+
+    public static final String TABLE_NAME="todo";
+    public static final String USER="user";
+    public static final String TYPE="type";
+    public static final String ID="id";
+    public static final String CREATE_TIME="time";
+    public static final String FLAG="flag";
+    public static final String WEIGHT="weight";
 }
