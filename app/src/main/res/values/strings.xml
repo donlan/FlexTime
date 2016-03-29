@@ -13,4 +13,9 @@
     <string name="todo_level2_text">日程第二梯队的最大日程数：</string>
     <string name="todo_level1_text">日程第一梯队的最大日程数：</string>
     <string name="label">更高效的管理你的时间</string>
+    <string name="default_seq">1</string>
+    <string name="header_info">让自己更高效</string>
+    <string name="start_lint_text">开始你的高效日程管理</string>
+    <string name="start_schedule_your_time">自动给你安排日程</string>
+    <string name="start_easy_manage_time">日程安排更轻松</string>
 </resources>

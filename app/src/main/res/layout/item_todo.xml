@@ -3,7 +3,7 @@
     android:id="@+id/item_todo_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/circle_rect_white_stro4"
+    android:background="@drawable/circle_rect_level_1"
     android:orientation="vertical"
     >
 
@@ -17,4 +17,5 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:textSize="18sp" />
+
 </RelativeLayout>

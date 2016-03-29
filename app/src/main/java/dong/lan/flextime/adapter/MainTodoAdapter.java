@@ -3,6 +3,7 @@ package dong.lan.flextime.adapter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,38 +15,48 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import dong.lan.flextime.Config;
+import dong.lan.flextime.Interface.onItemClickListener;
 import dong.lan.flextime.R;
-import dong.lan.flextime.bean.ToDo;
+import dong.lan.flextime.bean.ToDoItem;
+import dong.lan.flextime.bean.Todo;
+import dong.lan.flextime.dao.TodoDao;
+import dong.lan.flextime.utils.SP;
 import dong.lan.flextime.utils.TimeUtil;
 
 /**
- * Created by 梁桂栋 on 2015/12/10.
+ * 项目：FlexTime
+ * 作者：梁桂栋
+ * 日期： 2015/12/10  05:38.
+ *
+ *
+ * 日程信息的 RecyclerView Adapter
+ *
  */
 public class MainTodoAdapter extends RecyclerView.Adapter<MainTodoAdapter.VHolder> {
 
-    public static final int CLICK = 0;
-    public static final int LONG_CLICK = 1;
-    public static final int DRAG = 2;
-    private boolean isMain;
-    float x;
-    float y;
-    List<ToDo> toDos = new ArrayList<>();
+    public static final int CLICK = 0;          //单击
+    public static final int LONG_CLICK = 1;     //长按
+    public static final int DRAG = 2;           //拖动
+    private boolean isMain;                     //是否是主日程列表的日程
+    private boolean isGoodStatus;               //用户状态
+    List<Todo> todos = new ArrayList<>();       //日程
     Context context;
     StringBuffer sb = new StringBuffer();
-    DecimalFormat decimalFormat = new DecimalFormat("######.00");
+    DecimalFormat decimalFormat = new DecimalFormat("######.00"); //数字格式化为两位小数
 
-    public MainTodoAdapter(Context context, List<ToDo> toDos,boolean isMain) {
+    public MainTodoAdapter(Context context, List<Todo> todos, boolean isMain) {
         this.context = context;
-        this.toDos = toDos;
+        this.todos = todos;
         this.isMain = isMain;
+        isGoodStatus = SP.getStatus()==Config.GOOD;
     }
 
-    public interface onItemClickListener {
-        void itemClick(ToDo toDo, int pos, int type,boolean isMain);
-    }
 
+    /*
+    设置RecycleView的点击事件
+     */
     onItemClickListener listener;
-
     public void setOnItemClickListener(onItemClickListener listener) {
         this.listener = listener;
     }
@@ -57,72 +68,129 @@ public class MainTodoAdapter extends RecyclerView.Adapter<MainTodoAdapter.VHolde
 
     @Override
     public void onBindViewHolder(final VHolder holder, int position) {
-        final ToDo toDo = toDos.get(position);
-        sb.delete(0, sb.length());
-        sb.append("<html><body><h5>");
-        sb.append(toDo.getInfo());
-        sb.append("</h5>");
-        sb.append("<p>");
-        sb.append(TimeUtil.getRemainTime(toDo.getFinishTime()));
-        sb.append("</p>");
-        sb.append(TimeUtil.getStartTimeGap(toDo.getNeedTime(),toDo.getFinishTime()));
-        sb.append("</p>");
-        sb.append("权重（测试时可见）");
-        sb.append(decimalFormat.format(toDo.getWeight()));
-        sb.append("重要");
-        sb.append(toDo.getImportant());
-        sb.append("紧急");
-        sb.append(toDo.getUrgent());
-        sb.append("</p>");
-        sb.append("</body></html>");
+        final Todo todo = todos.get(position);
 
+        /*
+        为不同次序的日程设置不同背景颜色，便于用户分辨轻重缓急
+         */
+        if(holder.getLayoutPosition()<3)
+            holder.parent.setBackgroundResource(R.drawable.circle_rect_level_5);
+        else if(holder.getLayoutPosition()<6)
+            holder.parent.setBackgroundResource(R.drawable.circle_rect_level_4);
+        else if(holder.getLayoutPosition()<9)
+            holder.parent.setBackgroundResource(R.drawable.circle_rect_level_3);
+        else if(holder.getLayoutPosition()<12)
+            holder.parent.setBackgroundResource(R.drawable.circle_rect_level_2);
+        else if(holder.getLayoutPosition()>11)
+            holder.parent.setBackgroundResource(R.drawable.circle_rect_level_1);
+
+        sb.delete(0, sb.length());
+        sb.append("<html><body>");
+        if(todo.getType()==TodoDao.TYPE_SINGLE){
+            ToDoItem item = todo.getTodos().get(0);
+            long time = isGoodStatus ? item.getFinishTime(): item.getDeadline();
+            sb.append("<h5>");
+            sb.append(item.getInfo());
+            sb.append("</h5>");
+            sb.append("<p>");
+            sb.append(TimeUtil.getRemainTime(time));
+            sb.append("</p>");
+            sb.append(TimeUtil.getStartTimeGap(item.getStartTime(),item.getNeedTime()));
+            sb.append("</p>");
+            sb.append("权重（测试时可见）");
+            sb.append(decimalFormat.format(todo.getWeight()));
+            sb.append("重要");
+            sb.append(item.getImportant());
+            sb.append("紧急");
+            sb.append(item.getUrgent());
+            sb.append("</p>");
+        }else if(todo.getType()==TodoDao.TYPE_ORDER)
+        {
+            SparseArray<ToDoItem> items = todo.getTodos();
+            for(int i = 0;i<items.size();i++)
+            {
+                ToDoItem item = items.get(i);
+                long time = item.getFinishTime()- item.getDeadline()<=0? item.getFinishTime(): item.getDeadline();
+                sb.append("<h2>序号：");
+                sb.append(i+1);
+                sb.append("</h2><h5>");
+                sb.append(item.getInfo());
+                sb.append("</h5>");
+                sb.append("<p>");
+                sb.append(TimeUtil.getRemainTime(time));
+                sb.append("</p>");
+                sb.append(TimeUtil.getStartTimeGap(item.getStartTime(),item.getNeedTime()));
+
+            }
+        }else
+        {
+            SparseArray<ToDoItem> items = todo.getTodos();
+            for(int i = 0;i<items.size();i++)
+            {
+                ToDoItem item = items.get(i);
+                long time = item.getFinishTime()-item.getDeadline()<=0? item.getFinishTime(): item.getDeadline();
+                sb.append("<h2>◆</h2><h5>");
+                sb.append(item.getInfo());
+                sb.append("</h5>");
+                sb.append("<p>");
+                sb.append(TimeUtil.getRemainTime(time));
+                sb.append("</p>");
+                sb.append(TimeUtil.getStartTimeGap(item.getStartTime(),item.getNeedTime()));
+
+            }
+        }
+        sb.append("</body></html>");
         holder.info.setText(Html.fromHtml(sb.toString()));
         if (listener != null) {
             holder.parent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.itemClick(toDo, holder.getLayoutPosition(), CLICK,isMain);
+                    listener.itemClick(todo, holder.getLayoutPosition(), CLICK,isMain);
                 }
             });
 
             holder.parent.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    listener.itemClick(toDo, holder.getLayoutPosition(), LONG_CLICK, isMain);
+                    listener.itemClick(todo, holder.getLayoutPosition(), LONG_CLICK, isMain);
                     return false;
                 }
             });
         }
     }
 
-    public void updateTodo(ToDo toDo,int pos)
+    public void updateTodo(Todo todo, int pos)
     {
-        toDos.set(pos, toDo);
-        Collections.sort(toDos);
+        todos.set(pos, todo);
+        Collections.sort(todos);
         notifyDataSetChanged();
     }
-    public List<ToDo> getToDos() {
-        return toDos;
+    public List<Todo> getTodos() {
+        return todos;
     }
 
     public void deleteTodo(int pos) {
-        toDos.remove(pos);
+        todos.remove(pos);
         notifyItemRemoved(pos);
     }
 
-    public void deleteTodo(ToDo toDo) {
-        toDos.remove(toDo);
+    public void deleteTodo(Todo todo) {
+        todos.remove(todo);
         notifyDataSetChanged();
     }
 
-    public void addTodo(int pos, ToDo toDo) {
-        toDos.add(pos, toDo);
+    public void addTodo(int pos, Todo todo) {
+        todos.add(pos, todo);
         notifyItemInserted(pos);
     }
 
+    public void setGoodStatus(boolean goodStatus)
+    {
+        this.isGoodStatus = goodStatus;
+    }
     @Override
     public int getItemCount() {
-        return toDos.size();
+        return todos.size();
     }
 
     static class VHolder extends RecyclerView.ViewHolder {

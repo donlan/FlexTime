@@ -16,6 +16,9 @@ import dong.lan.flextime.utils.SortManager;
  * 项目：FlexTime
  * 作者：梁桂栋
  * 日期： 3/13/2016  00:29.
+ *
+ * 自定义权重因子
+ *
  */
 public class DefineFactorActivity extends BaseActivity {
 

@@ -1,16 +1,30 @@
 package dong.lan.flextime.bean;
 
 /**
- * Created by 梁桂栋 on 2015/12/12.
+ * 项目：FlexTime
+ * 作者：梁桂栋
+ * 日期： 2015/12/12  05:30.
+ *
+ *
+ * EventBus的事件封装类
  */
 public class ToDoEvent {
-    private ToDo toDo;
-    private int type;
-    private int pos;
 
-    public ToDoEvent(ToDo toDo,int type,int pos)
+    public static final int EVENT_ADD=0;            //普通日程添加
+    public static final int EVENT_UPDATE=1;         //普通日程的更新
+    public static final int EVENT_ORDER_DONE=2;     //分步日程添加完成
+    public static final int EVENT_ORDER_UPDATE=3;   //分步日程的更新
+    public static final int REFRESH_TODO=4;         //刷新日程列表
+    public static final int ONTIME_TO_TIMEOUT =5;   //将超时日程移动到超时列表
+    public static final int TODO_NOTIFY=6;          //日程状态栏提醒
+
+    private Todo todo; //事件传递的日程
+    private int type;  //事件类型
+    private int pos;   //对应RecycleView的layout position
+
+    public ToDoEvent(Todo todo, int type, int pos)
     {
-        this.toDo =toDo;
+        this.todo = todo;
         this.type =type;
         this.pos = pos;
     }
@@ -19,9 +33,9 @@ public class ToDoEvent {
         return pos;
     }
 
-    public ToDo getToDo()
+    public Todo getTodo()
     {
-        return toDo;
+        return todo;
     }
     public int getType()
     {

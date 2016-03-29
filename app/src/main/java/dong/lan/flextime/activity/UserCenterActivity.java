@@ -64,7 +64,7 @@ public class UserCenterActivity extends BaseActivity {
                 sb.append("</h2>");
 
                 sb.append("<h4>平均用时：");
-                sb.append(TimeUtil.longToString(Long.parseLong(keyWord.getTime()),"d天 H小时 m分"));
+                sb.append(TimeUtil.defaultNeedFormat(Long.parseLong(keyWord.getTime())));
                 sb.append(" </h4><h5>重要性：");
                 sb.append(keyWord.getImp());
                 sb.append(" 紧急性：");

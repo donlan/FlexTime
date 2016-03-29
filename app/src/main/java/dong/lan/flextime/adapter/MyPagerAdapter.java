@@ -7,7 +7,13 @@ import android.view.ViewGroup;
 import java.util.List;
 
 /**
- * Created by 梁桂栋 on 2015/12/7.
+ * 项目：FlexTime
+ * 作者：梁桂栋
+ * 日期： 2015/12/7  05:37.
+ *
+ *
+ * 引导页的滑动 PagerAdapter
+ *
  */
 public class MyPagerAdapter extends PagerAdapter {
 

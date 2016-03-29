@@ -16,15 +16,18 @@ import java.util.TimerTask;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.bmob.v3.BmobUser;
 import dong.lan.flextime.R;
 import dong.lan.flextime.adapter.MyPagerAdapter;
-import dong.lan.flextime.bean.User;
 import dong.lan.flextime.utils.SP;
-import dong.lan.flextime.utils.UserManager;
 
 /**
- * Created by 梁桂栋 on 2015/11/26.
+ * 项目：FlexTime
+ * 作者：梁桂栋
+ * 日期： 2015/11/26  03:13.
+ *
+ *
+ * 引导页
+ *
  */
 public class Welcome extends BaseActivity {
     @Bind(R.id.welcome_logo)
@@ -38,7 +41,7 @@ public class Welcome extends BaseActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_welcome);
         ButterKnife.bind(this);
-        UserManager.getManager(getApplicationContext()).initUser(BmobUser.getCurrentUser(getApplicationContext(), User.class));
+
         if(SP.isWelcome()) {
             ObjectAnimator.ofFloat(logo, "alpha", 0.1f, 1f).setDuration(1500).start();
             pager.setVisibility(View.GONE);

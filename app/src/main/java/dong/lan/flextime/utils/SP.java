@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import dong.lan.flextime.Config;
 
 /**
- * Created by 梁桂栋 on 2015/11/27.
+ * 项目：FlexTime
+ * 作者：梁桂栋
+ * 日期： 2015/11/27  07:02.
  */
 public class SP {
     public static final String SP_NAME = "FlexTime";
@@ -23,6 +25,9 @@ public class SP {
         sharedPreferences.edit().putBoolean("isLogin", login).apply();
     }
 
+    /*
+    是否第一次开启应用
+     */
     public static boolean isWelcome() {
         return sharedPreferences.getBoolean("IS_WELCOME", false);
     }
@@ -32,6 +37,9 @@ public class SP {
     }
 
 
+    /*
+    保存保存的重要性权重因子
+     */
     public static void setImp(float imp) {
         sharedPreferences.edit().putFloat("Importance", imp).apply();
     }
@@ -41,6 +49,9 @@ public class SP {
     }
 
 
+    /*
+    保存保存的紧急性权重因子
+     */
     public static void setUrg(float imp) {
         sharedPreferences.edit().putFloat("Urgent", imp).apply();
     }
@@ -50,6 +61,9 @@ public class SP {
     }
 
 
+    /*
+    保存用户的使用状态
+     */
     public static void setStatus(int status) {
         sharedPreferences.edit().putInt("STATUS", status).apply();
     }
@@ -58,6 +72,9 @@ public class SP {
         return sharedPreferences.getInt("STATUS", Config.GOOD);
     }
 
+    /*
+    保存用户的使用模式
+     */
     public static void setMode(int mode) {
         sharedPreferences.edit().putInt("MODE", mode).apply();
     }
@@ -67,6 +84,9 @@ public class SP {
     }
 
 
+    /*
+    保存提示声音的Uri路劲
+     */
     public static void writeSoundPath(String path) {
         sharedPreferences.edit().putString("ALERT_SOUND", path).apply();
     }
@@ -75,6 +95,9 @@ public class SP {
         return sharedPreferences.getString("ALERT_SOUND", "");
     }
 
+    /*
+    保存日程提醒的提前间隔
+     */
     public static void setAlertDelay(int alertDelay) {
         sharedPreferences.edit().putInt("ALERT_DELAY", alertDelay).apply();
     }
@@ -83,6 +106,9 @@ public class SP {
         return sharedPreferences.getInt("ALERT_DELAY", 1);
     }
 
+    /*
+    保存日程轮询的第一梯队的容量
+     */
     public static void setLevelFirst(int first)
     {
         sharedPreferences.edit().putInt("LEVEL_FIRST",first).apply();
@@ -92,6 +118,9 @@ public class SP {
     {
         return sharedPreferences.getInt("LEVEL_FIRST",6);
     }
+    /*
+   保存日程轮询的第二梯队的容量
+    */
     public static void setLevelSecond(int second)
     {
         sharedPreferences.edit().putInt("LEVEL_SECOND",second).apply();

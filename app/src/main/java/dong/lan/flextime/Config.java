@@ -34,12 +34,17 @@ public class Config {
     public static int MODE = NORMAL;
 
 
+    public static int FRESH_GAP =120000;    //日程刷新间隔
+
+    public static int LEVEL = 0 ;
+    public static int SCAN_DELAY = 600000;  //定位刷新时间间隔
 
     public static void init(int status,int mode)
     {
         MODE =mode;
         STATUS = status;
     }
+
 
     public static double getLevelFactor(int level)
     {
@@ -55,5 +60,4 @@ public class Config {
                 return LEVEL_NORMAL_SCALE;
         }
     }
-
 }

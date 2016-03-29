@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include layout="@layout/common_toolbar" />
+
+            <EditText
+                android:id="@+id/addTodo_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/circle_rect_white_r0"
+                android:hint="TODO:"
+                android:minHeight="80dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp" />
+
+            <TextView
+                android:id="@+id/addTodo_tips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="6dp"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:drawablePadding="16dp"
+                        android:gravity="center"
+                        android:text="日程期望效果与时长" />
+
+                    <RadioGroup
+                        android:id="@+id/level_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/level_high"
+                            android:layout_width="@dimen/level_radio_size"
+                            android:layout_height="@dimen/level_radio_size"
+                            android:background="@drawable/check_circle_blue"
+                            android:button="@null"
+                            android:checked="true"
+                            android:gravity="center"
+                            android:text="高"
+                            android:textColor="@color/md_white_1000"
+                            android:textSize="20sp" />
+
+                        <RadioButton
+                            android:id="@+id/level_mid"
+                            android:layout_width="@dimen/level_radio_size"
+                            android:layout_height="@dimen/level_radio_size"
+                            android:layout_marginLeft="50dp"
+                            android:layout_marginRight="50dp"
+                            android:background="@drawable/check_circle_blue"
+                            android:button="@null"
+                            android:gravity="center"
+                            android:text="中"
+                            android:textColor="@color/md_white_1000"
+                            android:textSize="20sp" />
+
+                        <RadioButton
+                            android:id="@+id/level_low"
+                            android:layout_width="@dimen/level_radio_size"
+                            android:layout_height="@dimen/level_radio_size"
+                            android:background="@drawable/check_circle_blue"
+                            android:button="@null"
+                            android:gravity="center"
+                            android:text="低"
+                            android:textColor="@color/md_white_1000"
+                            android:textSize="20sp" />
+
+                    </RadioGroup>
+
+                    <TextView
+                        android:id="@+id/addTodo_setNeedTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingBottom="8dp"
+                        android:paddingLeft="26dp"
+                        android:paddingRight="26dp"
+                        android:paddingTop="8dp"
+                        android:text="@string/set_need_time"
+                        android:textSize="16sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp"
+                        android:background="@color/md_grey_300" />
+
+                    <TextView
+                        android:id="@+id/addTodo_setDeadline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@mipmap/dot_grey"
+                        android:drawablePadding="16dp"
+                        android:gravity="center_vertical"
+                        android:paddingBottom="8dp"
+                        android:paddingLeft="26dp"
+                        android:paddingRight="26dp"
+                        android:paddingTop="8dp"
+                        android:text="@string/set_deadline"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/addTodo_setBestTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@mipmap/dot_grey"
+                        android:drawablePadding="16dp"
+                        android:gravity="center_vertical"
+                        android:paddingBottom="8dp"
+                        android:paddingLeft="26dp"
+                        android:paddingRight="26dp"
+                        android:paddingTop="8dp"
+                        android:text="@string/set_finish_time"
+                        android:textSize="16sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp"
+                        android:background="@color/md_grey_300" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="26dp"
+                        android:paddingRight="26dp">
+
+                        <TextView
+                            android:id="@+id/addTodo_ImportanceText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/addTodo_marginTop"
+                            android:drawableLeft="@mipmap/dot_grey"
+                            android:drawablePadding="6dp"
+                            android:text="重要:"
+                            android:textSize="18sp" />
+
+                        <SeekBar
+                            android:id="@+id/addTodo_Importance_seekBar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:max="5"
+                            android:progress="2" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="26dp"
+                        android:paddingRight="26dp">
+
+                        <TextView
+                            android:id="@+id/addTodo_UrgentText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/addTodo_marginTop"
+                            android:drawableLeft="@mipmap/dot_grey"
+                            android:drawablePadding="6dp"
+                            android:text="紧急:"
+                            android:textSize="18sp" />
+
+                        <SeekBar
+                            android:id="@+id/addTodo_Urgent_seekBar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:max="5"
+                            android:progress="3" />
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@color/md_grey_300" />
+
+                    <TextView
+                        android:id="@+id/addTodo_setLoc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/addTodo_marginTop"
+                        android:drawableLeft="@mipmap/dot_grey"
+                        android:drawablePadding="16dp"
+                        android:drawableRight="@mipmap/location_icon"
+                        android:paddingLeft="26dp"
+                        android:paddingRight="26dp"
+                        android:text="设置位置"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingLeft="26dp"
+                        android:paddingRight="26dp"
+                        android:paddingTop="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableLeft="@mipmap/dot_grey"
+                            android:drawablePadding="16dp"
+                            android:text="是否提醒"
+                            android:textSize="16sp" />
+
+                        <CheckBox
+                            android:id="@+id/addTodo_remindCheck"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/seqText"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            android:background="@color/md_indigo_700"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/md_white_1000"
+            android:textSize="24sp" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/md_white_1000"
+        >
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/todoItemList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+</android.support.v4.widget.DrawerLayout>

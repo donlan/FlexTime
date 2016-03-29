@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import dong.lan.flextime.Interface.ScheduleDeliver;
-import dong.lan.flextime.utils.TimeUtil;
 
 /**
  * 项目：FlexTime
@@ -18,11 +17,11 @@ public class ScheduleManager {
     private int total;
     private int level_first_size;
     private int level_second_size;
-    private List<ToDo> toDos = new ArrayList<>();
+    private List<ToDoItem> toDoItems = new ArrayList<>();
     private ScheduleDeliver deliver;
 
-    public List<ToDo> getToDos() {
-        return toDos;
+    public List<ToDoItem> getToDoItems() {
+        return toDoItems;
     }
 
     public ScheduleManager(int first, int second, ScheduleDeliver deliver) {
@@ -35,10 +34,10 @@ public class ScheduleManager {
         this(10, 20, deliver);
     }
 
-    public void init(List<ToDo> toDos) {
-        Collections.sort(toDos);
-        total = toDos.size();
-        this.toDos = toDos;
+    public void init(List<ToDoItem> toDoItems) {
+        Collections.sort(toDoItems);
+        total = toDoItems.size();
+        this.toDoItems = toDoItems;
     }
 
 
@@ -46,20 +45,19 @@ public class ScheduleManager {
     {
         for(int i=0;i<level_first_size;i++)
         {
-            if (Math.abs(TimeUtil.getStartTime(toDos.get(i).getNeedTime(), toDos.get(i).getFinishTime())
+            if (Math.abs( toDoItems.get(i).getStartTime()
                     - System.currentTimeMillis()) < 600000) {
-                deliver.onScheduleDelivering(ALERT,toDos.get(i));
+                deliver.onScheduleDelivering(ALERT, toDoItems.get(i));
             }
-            if (TimeUtil.stringToLong(toDos.get(i).getFinishTime(), TimeUtil.FORMAT_DATA_TIME_SECOND)
-                    - System.currentTimeMillis() < 0) {
-               deliver.onScheduleDelivering(TIMEOVER,toDos.get(i));
+            if (toDoItems.get(i).getFinishTime()- System.currentTimeMillis() < 0) {
+               deliver.onScheduleDelivering(TIMEOVER, toDoItems.get(i));
             }
         }
     }
-    public void add(ToDo toDo) {
-        toDos.add(toDo);
+    public void add(ToDoItem toDoItem) {
+        toDoItems.add(toDoItem);
         total++;
-        Collections.sort(toDos);
+        Collections.sort(toDoItems);
     }
 
     public int getTotal() {

@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -21,36 +21,33 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import java.text.BreakIterator;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.bmob.v3.datatype.BmobGeoPoint;
 import de.greenrobot.event.EventBus;
-import dong.lan.flextime.BuildConfig;
 import dong.lan.flextime.Config;
 import dong.lan.flextime.R;
 import dong.lan.flextime.adapter.MyPagerAdapter;
-import dong.lan.flextime.bean.KeyWord;
 import dong.lan.flextime.bean.LocDes;
-import dong.lan.flextime.bean.ToDo;
 import dong.lan.flextime.bean.ToDoEvent;
-import dong.lan.flextime.bean.User;
+import dong.lan.flextime.bean.ToDoItem;
+import dong.lan.flextime.bean.Todo;
+import dong.lan.flextime.dao.TodoDao;
 import dong.lan.flextime.db.DBManager;
-import dong.lan.flextime.utils.SortManager;
+import dong.lan.flextime.utils.KeyWordManager;
 import dong.lan.flextime.utils.TimeUtil;
+import dong.lan.flextime.utils.TodoManager;
 import dong.lan.flextime.utils.UserManager;
 
 /**
- * Created by 梁桂栋 on 2015/12/11.
+ * 项目：FlexTime
+ * 作者：梁桂栋
+ * 日期： 2015/12/11  14:52.
  */
 public class AddTodoActivity extends BaseActivity implements View.OnClickListener {
 
@@ -66,10 +63,6 @@ public class AddTodoActivity extends BaseActivity implements View.OnClickListene
     TextView setDeadlineText;
     @Bind(R.id.addTodo_setNeedTime)
     TextView setNeedTime;
-    @Bind(R.id.addTodo_Importance_seekBar)
-    SeekBar impoSeekBar;
-    @Bind(R.id.addTodo_Urgent_seekBar)
-    SeekBar urgentSeekBar;
     @Bind(R.id.addTodo_ImportanceText)
     TextView importanceText;
     @Bind(R.id.addTodo_UrgentText)
@@ -82,42 +75,55 @@ public class AddTodoActivity extends BaseActivity implements View.OnClickListene
     TextView barRight;
     @Bind(R.id.addTodo_setLoc)
     TextView setLocDes;
+    @Bind(R.id.addTodo_tips)
+    TextView todoTips;
+
     @Bind(R.id.addTodo_remindCheck)
     CheckBox remindCheck;
+
     @Bind(R.id.addTodo_info)
     EditText info;
 
+    @Bind(R.id.addTodo_Importance_seekBar)
+    SeekBar impoSeekBar;
+    @Bind(R.id.addTodo_Urgent_seekBar)
+    SeekBar urgentSeekBar;
+
     @Bind(R.id.level_mid)
     RadioButton levelMid;
-
     @Bind(R.id.level_high)
     RadioButton levelHigh;
-
     @Bind(R.id.level_low)
     RadioButton levelLow;
-
-    @Bind(R.id.addTodo_tips)
-    TextView todoTips;
     private LocDes loc;
-    private ToDo toDo;
     private int pos;
-    private boolean ADD = true;
-
+    private boolean ADD = true;   //判断是添加日程，还是更新日程信息
+    private Todo todo;
+    Map<String, String> map = new HashMap<>();  //保存获取到的分词结果
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_todo);
         ButterKnife.bind(this);
-        if (getIntent().hasExtra("TODO")) {
-            toDo = (ToDo) getIntent().getSerializableExtra("TODO");
+        if (getIntent().hasExtra("TODO_ID")) {
+            todo = DBManager.getManager().getTodoByID(getIntent().getStringExtra("TODO_ID"));
             pos = getIntent().getIntExtra("POS", 0);
             ADD = false;
         }
+        //日程todo为空，说明是添加日称，直接构建一个日程信息
+        if (todo == null) {
+            todo = new Todo(TimeUtil.defaultFormat(System.currentTimeMillis()), TodoDao.TYPE_SINGLE,
+                    new SparseArray<ToDoItem>(), UserManager.getManager().getUser(), String.valueOf(System.currentTimeMillis()), TodoDao.FLAG_ON,0);
+        }
         initView();
     }
-
     long curTime;
+
+
+    /*
+    监听日程内容的输入，获取筛选到的关键词的历史平均用时
+     */
     private TextWatcher watcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -131,93 +137,37 @@ public class AddTodoActivity extends BaseActivity implements View.OnClickListene
 
         @Override
         public void afterTextChanged(Editable s) {
-            if(System.currentTimeMillis()-curTime>5000 && info.getText().length()>1)
-            {
-                if (BuildConfig.DEBUG) Log.d("AddTodoActivity", "TEXT_CAHNGE");
-                searchRecom();
+            if (System.currentTimeMillis() - curTime > 3000 && info.getText().length() > 1) {
+
+                map = KeyWordManager.getManager().searchRecom(info.getText().toString(), todoTips);
             }
-            curTime=System.currentTimeMillis();
+            curTime = System.currentTimeMillis();
 
         }
     };
 
 
-    Map<String,String> map = new HashMap<>();
-    private void searchRecom()
-    {
-        String text = info.getText().toString();
-        BreakIterator iterator = BreakIterator.getWordInstance(Locale.CHINA);
-        iterator.setText(text);
-        int start = iterator.first();
-        for(int end = iterator.next();end!=BreakIterator.DONE;start=end,end=iterator.next())
-        {
-            if(text.substring(start, end).length()>1){
-                map.put(text.substring(start, end),"");
-            }
-        }
-        if (BuildConfig.DEBUG) Log.d("AddTodoActivity", map.toString());
-        todoTips.setVisibility(View.VISIBLE);
-        if(!map.isEmpty()) {
-            showRecommend(map);
-        }
-
-    }
-
-    private void showRecommend(Map<String,String> map)
-    {
-        StringBuilder sb = new StringBuilder();
-        for(String key : map.keySet())
-        {
-            KeyWord keyword =  DBManager.getManager().getKeyword(key);
-            if(keyword!=null)
-            {
-                sb.append(keyword.getWord());
-                sb.append("  平均时长： ");
-                sb.append(TimeUtil.longToString(Long.parseLong(keyword.getTime()),"d天 H小时 m分"));
-                sb.append("\n");
-            }
-        }
-        todoTips.setText(sb.toString());
-    }
-
     private void initView() {
         EventBus.getDefault().register(this);
+        ToDoItem curItem = todo.getTodos().get(0);
         setBestTimeText.setOnClickListener(this);
         setNeedTime.setOnClickListener(this);
         setDeadlineText.setOnClickListener(this);
         barLeft.setOnClickListener(this);
         barRight.setOnClickListener(this);
         setLocDes.setOnClickListener(this);
-        if (toDo == null) {
+        if (curItem == null) {
             barRight.setText(" 完成 ");
             barCenter.setText("添加日程");
             impoSeekBar.setProgress(3);
             urgentSeekBar.setProgress(2);
         } else {
-            impoSeekBar.setProgress(toDo.getImportant());
-            urgentSeekBar.setProgress(toDo.getUrgent());
+            impoSeekBar.setProgress(curItem.getImportant());
+            urgentSeekBar.setProgress(curItem.getUrgent());
             barRight.setText("更新");
             barCenter.setText("日程详情");
-            sb.append("最佳完成时间-> ");
-            if(toDo.getFinishTime().substring(0,4).equals("9999"))
-                sb.append("没有设置");
-            else
-            sb.append(toDo.getFinishTime());
-            setBestTimeText.setText(sb.toString());
-            sb.delete(0, sb.length());
-            sb.append("最晚完成时间-> ");
-            if(toDo.getDeadline().substring(0,4).equals("9999"))
-                sb.append("没有设置");
-            else
-            sb.append(toDo.getDeadline());
-            setDeadlineText.setText(sb.toString());
-            remindCheck.setChecked(toDo.getRemind().equals(1));
-            info.setText(toDo.getInfo());
-            setLocDes.setText(toDo.getLoc());
-            sb.delete(0, sb.length());
-            sb.append("所需时长-> ");
-            sb.append(toDo.getNeedTime());
-            setNeedTime.setText(sb.toString());
+            TodoManager.get().setTodoItemToView(curItem, info, setNeedTime, setBestTimeText, setDeadlineText,
+                    setLocDes, remindCheck, impoSeekBar, urgentSeekBar, levelHigh, levelMid, levelLow);
         }
         impoSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -267,6 +217,9 @@ public class AddTodoActivity extends BaseActivity implements View.OnClickListene
 
     PopupWindow pop;
 
+    /*
+    日程时间设置
+     */
     private void popDatePicker(final TextView timeText, final boolean isDeadline) {
         View view = LayoutInflater.from(this).inflate(R.layout.dialig_pick_time, null);
         View view1 = LayoutInflater.from(this).inflate(R.layout.date_picker, null);
@@ -358,77 +311,42 @@ public class AddTodoActivity extends BaseActivity implements View.OnClickListene
             Show("请设置需要完成此事的预期时间");
             return;
         }
-        String endTime = setBestTimeText.getText().toString();
         String needTime = setNeedTime.getText().toString();
-        String deadline = setDeadlineText.getText().toString();
 
-        needTime = needTime.substring(needTime.lastIndexOf(">") + 2);
 
-        if (endTime.length() > 10)
-            endTime = endTime.substring(endTime.lastIndexOf(">") + 2);
-        else
-            endTime = "9999年12月31日 23:59";
-
-        if (deadline.length() > 10)
-            deadline = deadline.substring(deadline.lastIndexOf(">") + 2);
-        else
-            deadline = "9999年12月31日 23:59";
-
-        if (toDo == null)
-            toDo = new ToDo();
-        toDo.setLastDoTime("");
-        toDo.setPerContinueTime(30);
-        toDo.setDoneOnTime(false);
-        User u = UserManager.getManager(this).getUser();
-        if(u==null)
-            u=new User("Doo");
-        toDo.setUser(u);
-        toDo.setImportant(impoSeekBar.getProgress());
-        toDo.setUrgent(urgentSeekBar.getProgress());
-        if (levelHigh.isChecked())
-            toDo.setStatus(Config.LEVEL_HIGH);
-        else if (levelMid.isChecked())
-            toDo.setStatus(Config.LEVEL_NORMAL);
-        else
-            toDo.setStatus(Config.LEVEL_LOW);
-        if (loc != null) {
-            toDo.setLoc(loc.getDes());
-            toDo.setPoint(new BmobGeoPoint(loc.getLatLng().longitude, loc.getLatLng().latitude));
-        }
-        toDo.setLevel("1");
-        toDo.setInfo(info.getText().toString());
-        toDo.setRemind(remindCheck.isChecked() ? 1 : 0);
-        toDo.setContinueDo(false);
-        String bTime = String.valueOf(TimeUtil.getStartTime(needTime, endTime));
-        String dTime = String.valueOf(TimeUtil.getStartTime(needTime, deadline));
-
-        toDo.setStartTime(bTime.compareTo(dTime) >= 0 ? dTime : bTime);
-        toDo.setWeight(SortManager.getSortWeight(impoSeekBar.getProgress(), urgentSeekBar.getProgress(), toDo.getStatus()));
         if (ADD) {
-            toDo.setFinishTime(endTime);
-            toDo.setDeadline(deadline);
-            toDo.setNeedTime(needTime);
-            String createTime = new SimpleDateFormat(TimeUtil.FORMAT_DATA_TIME_SECOND, Locale.CHINA).format(new Date());
-            toDo.setCreateTime(createTime);
-            DBManager.getManager().addAToDo(toDo);
-            EventBus.getDefault().post(new ToDoEvent(toDo, 0, pos));
+            ToDoItem item = TodoManager.get().addTodoItem(todo,
+                    info.getText().toString(),
+                    setBestTimeText.getText().toString(),
+                    setDeadlineText.getText().toString(),
+                    needTime,
+                    levelHigh.isChecked() ? Config.LEVEL_HIGH : (levelMid.isChecked() ? Config.LEVEL_NORMAL : Config.LEVEL_LOW),
+                    loc,
+                    impoSeekBar.getProgress(),
+                    urgentSeekBar.getProgress(), 0, remindCheck.isChecked());
+            todo.addTodoItem(item);
+            todo.setType(TodoDao.TYPE_SINGLE);
+            TodoManager.get().addTodo(todo, -1);
 
-
-            for(String key : map.keySet())
-            {
-                   DBManager.getManager().addKeyword(key, String.valueOf(TimeUtil.getLongNeedTime(needTime)),impoSeekBar.getProgress(),urgentSeekBar.getProgress());
+            /*
+            保存当前日程内容的分词结果到数据库
+             */
+            for (String key : map.keySet()) {
+                DBManager.getManager().addKeyword(key, String.valueOf(TimeUtil.getLongNeedTime(needTime.substring(needTime.lastIndexOf(">") + 2))), impoSeekBar.getProgress(), urgentSeekBar.getProgress());
             }
         } else {
-            if (!endTime.equals(toDo.getFinishTime()))
-                toDo.setFinishTime(endTime);
-            if (!deadline.equals(toDo.getDeadline()))
-                toDo.setDeadline(deadline);
-            if (!setNeedTime.getText().toString().equals(toDo.getNeedTime()))
-                toDo.setNeedTime(needTime);
-            DBManager.getManager().updateTodo(toDo);
-            EventBus.getDefault().post(new ToDoEvent(toDo, 1, pos));
+            TodoManager.get().updateSingleTodo(todo, info.getText().toString(),
+                    setBestTimeText.getText().toString(),
+                    setDeadlineText.getText().toString(),
+                    needTime,
+                    levelHigh.isChecked() ? Config.LEVEL_HIGH : (levelMid.isChecked() ? Config.LEVEL_NORMAL : Config.LEVEL_LOW),
+                    loc,
+                    impoSeekBar.getProgress(),
+                    urgentSeekBar.getProgress(), 0, remindCheck.isChecked());
+            EventBus.getDefault().post(new ToDoEvent(todo, ToDoEvent.EVENT_UPDATE, pos));
         }
-        finish();
+
+    finish();
     }
 
 
@@ -465,6 +383,9 @@ public class AddTodoActivity extends BaseActivity implements View.OnClickListene
 
     AlertDialog dialog;
 
+    /*
+    一个设置日程所需时长的dialog
+     */
     private void setNeedTimeDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_need_time_picker, null);

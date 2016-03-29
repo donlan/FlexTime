@@ -33,7 +33,12 @@ import dong.lan.flextime.R;
 import dong.lan.flextime.bean.LocDes;
 
 /**
- * Created by 梁桂栋 on 2015/12/11.
+ * 项目：FlexTime
+ * 作者：梁桂栋
+ * 日期： 2015/12/11  05:49.
+ *
+ * 位置信息获取
+ *
  */
 public class AddMapLocActivity extends BaseActivity implements OnGetGeoCoderResultListener, BDLocationListener {
     @Bind(R.id.bmapView)

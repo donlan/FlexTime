@@ -34,45 +34,45 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.update.BmobUpdateAgent;
 import de.greenrobot.event.EventBus;
 import dong.lan.flextime.Config;
+import dong.lan.flextime.Interface.onItemClickListener;
 import dong.lan.flextime.R;
 import dong.lan.flextime.adapter.MainTodoAdapter;
-import dong.lan.flextime.bean.ToDo;
 import dong.lan.flextime.bean.ToDoEvent;
-import dong.lan.flextime.bean.User;
-import dong.lan.flextime.dao.ToDoDao;
+import dong.lan.flextime.bean.ToDoItem;
+import dong.lan.flextime.bean.Todo;
+import dong.lan.flextime.dao.ToDoItemDao;
+import dong.lan.flextime.dao.TodoDao;
 import dong.lan.flextime.db.DBManager;
+import dong.lan.flextime.services.WorkService;
 import dong.lan.flextime.utils.SP;
 import dong.lan.flextime.utils.SortManager;
 import dong.lan.flextime.utils.TimeUtil;
+import dong.lan.flextime.utils.TodoManager;
 import dong.lan.flextime.utils.UserManager;
 
-public class MainActivity extends BaseActivity implements MainTodoAdapter.onItemClickListener, BDLocationListener, SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends BaseActivity implements onItemClickListener, BDLocationListener, SwipeRefreshLayout.OnRefreshListener {
 
     public static final int REFRESH = 1;
     private static final int SWIPE_REFRESH = 2;
-    public static final int DYNA_FRESH = 3;
-    public static final int SWAP = 4;
-    int REFRESH_DELAY = 60000;
-    int SCAN_DELAY = 600000;
+
     boolean isMain = true;
     int status;
     int mode;
     int levelFirst;
     int levelSecond;
     int level;
-    int timeDelay;
-    List<ToDo> toDos;
-    List<ToDo> timeOutTodos;
+    List<Todo> todos;
+    List<Todo> timeOutTodos;
     MyHandle handle = new MyHandle();
     @Bind(R.id.bar_add)
     TextView barAdd;
@@ -115,27 +115,24 @@ public class MainActivity extends BaseActivity implements MainTodoAdapter.onItem
     TextView userInfo;
 
     @OnClick(R.id.drawer_statistic)
-    public void toUserCenter()
-    {
-        startActivity(new Intent(MainActivity.this,UserCenterActivity.class));
+    public void toUserCenter() {
+        startActivity(new Intent(MainActivity.this, UserCenterActivity.class));
     }
+
     private MainTodoAdapter adapter;
     private MainTodoAdapter rAdapter;
-    private Toolbar toolbar;
     private LocationClient mLocClient;
     private ContentValues values;
-    private boolean START = true;
-    int TIMES = 0;
-    private DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         ButterKnife.bind(this);
         BmobUpdateAgent.update(this);
         EventBus.getDefault().register(this);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         barAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,13 +143,13 @@ public class MainActivity extends BaseActivity implements MainTodoAdapter.onItem
         barAddSeq.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,AddOrderTodoActivity.class));
+                startActivity(new Intent(MainActivity.this, AddOrderTodoActivity.class));
             }
         });
         resetWeight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,DefineFactorActivity.class));
+                startActivity(new Intent(MainActivity.this, DefineFactorActivity.class));
             }
         });
         filter.setOnClickListener(new View.OnClickListener() {
@@ -183,7 +180,7 @@ public class MainActivity extends BaseActivity implements MainTodoAdapter.onItem
                         .getDisplayMetrics()));
         refreshLayout.setOnRefreshListener(this);
         recyclerView.setHasFixedSize(true);
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
@@ -199,26 +196,26 @@ public class MainActivity extends BaseActivity implements MainTodoAdapter.onItem
         modeGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                changeMode(checkedId);
+                TodoManager.get().changeMode(checkedId);
             }
         });
 
         statusGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                changeStatus(checkedId);
+                TodoManager.get().changeStatus(checkedId);
             }
         });
 
         head.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(UserManager.getManager(getApplicationContext()).isLogin()){
-                    startActivity(new Intent(MainActivity.this,UserCenterActivity.class));
-                    userInfo.setText(BmobUser.getCurrentUser(MainActivity.this, User.class).toString());
-                }else {
+                if (UserManager.getManager().isLogin()) {
+                    startActivity(new Intent(MainActivity.this, UserCenterActivity.class));
+                    //userInfo.setText(BmobUser.getCurrentUser(MainActivity.this, User.class).toString());
+                } else {
                     userInfo.setText("登录便可可同步日程信息");
-                    startActivity(new Intent(MainActivity.this,LoginActivity.class));
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 }
             }
         });
@@ -227,7 +224,7 @@ public class MainActivity extends BaseActivity implements MainTodoAdapter.onItem
         LocationClientOption option = new LocationClientOption();
         option.setOpenGps(false);// 打开gps
         option.setCoorType("bd09ll"); // 设置坐标类型
-        option.setScanSpan(SCAN_DELAY);
+        option.setScanSpan(Config.SCAN_DELAY);
         option.setIsNeedAddress(true);
         option.setTimeOut(3000);
         mLocClient.setLocOption(option);
@@ -236,6 +233,7 @@ public class MainActivity extends BaseActivity implements MainTodoAdapter.onItem
         setStatusAndMode();
         initFactor();
 
+
     }
 
 
@@ -243,26 +241,28 @@ public class MainActivity extends BaseActivity implements MainTodoAdapter.onItem
         SortManager.init(SP.getImp(), SP.getUrg());
         levelFirst = SP.getLevelFirst();
         levelSecond = SP.getLevelSecond();
-        timeDelay = SP.getAlertDelay()*60000;
     }
 
     private void changeAndRefresh() {
         if (status != SP.getStatus() || mode != SP.getMode()) {
             resortTodos();
+            adapter.setGoodStatus(status==Config.GOOD);
         }
+        if (todos == null)
+            return;
         switch (mode) {
             case Config.WORK:
-                level=levelSecond;
-                if(level>toDos.size())
-                    level = toDos.size();
+                level = levelSecond;
+                if (level > todos.size())
+                    level = todos.size();
                 break;
             case Config.NORMAL:
                 level = levelFirst;
-                if(level>toDos.size())
-                    level = toDos.size();
+                if (level > todos.size())
+                    level = todos.size();
                 break;
             case Config.BUSY:
-                level = toDos.size();
+                level = todos.size();
                 break;
         }
     }
@@ -274,98 +274,72 @@ public class MainActivity extends BaseActivity implements MainTodoAdapter.onItem
             statusBad.setChecked(true);
         else
             statusGood.setChecked(true);
+        if (todos == null)
+            return;
         switch (mode) {
             case Config.WORK:
                 modeWork.setChecked(true);
-                level=levelSecond;
-                if(level>toDos.size())
-                    level = toDos.size();
+                level = levelSecond;
+                if (level > todos.size())
+                    level = todos.size();
                 break;
             case Config.NORMAL:
                 modeNormal.setChecked(true);
                 level = levelFirst;
-                if(level>toDos.size())
-                    level = toDos.size();
+                if (level > todos.size())
+                    level = todos.size();
                 break;
             case Config.BUSY:
                 modeBusy.setChecked(true);
-                level = toDos.size();
+                level = todos.size();
                 break;
         }
+        Config.LEVEL = level;
 
     }
-
-    private void changeStatus(int checkedId) {
-        switch (checkedId) {
-            case R.id.status_good:
-                SP.setStatus(Config.GOOD);
-                Config.STATUS = Config.GOOD;
-                break;
-            case R.id.status_bad:
-                SP.setStatus(Config.BAD);
-                Config.STATUS = Config.BAD;
-                break;
-        }
-    }
-
-    private void changeMode(int checkedId) {
-        switch (checkedId) {
-            case R.id.mode_busy:
-                SP.setMode(Config.BUSY);
-                Config.MODE = Config.BUSY;
-                break;
-            case R.id.mode_normal:
-                SP.setMode(Config.NORMAL);
-                Config.MODE = Config.NORMAL;
-                break;
-            case R.id.mode_work:
-                SP.setMode(Config.WORK);
-                Config.MODE = Config.WORK;
-                break;
-        }
-    }
-
-
 
     private void resortTodos() {
-        Collections.sort(toDos);
+        if (todos == null)
+            return;
+        Collections.sort(todos);
         adapter.notifyDataSetChanged();
     }
 
 
-    public void setDynaFresh(ToDo toDo) {
-        if (toDo != null) {
+    public void setDynaFresh(Todo todo) {
+        if (todo != null) {
+            ToDoItem toDoItem = todo.getTodos().get(0);
             Intent notifyIntent =
                     new Intent(this, AddTodoActivity.class);
-            notifyIntent.putExtra("TODO", toDo);
+            notifyIntent.putExtra("TODO_ID", todo.getId());
             notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                     | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             PendingIntent notifyPendingIntent =
                     PendingIntent.getActivity(
                             this,
-                            toDo.getCreateTime().hashCode(),
+                            todo.getCreateTime().hashCode(),
                             notifyIntent,
                             PendingIntent.FLAG_UPDATE_CURRENT
                     );
 
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.cancel(toDo.getCreateTime().hashCode());
+            mNotificationManager.cancel(todo.getCreateTime().hashCode());
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.mipmap.logo)
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.mipmap.logo))
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.logo))
                     .setOnlyAlertOnce(true)
                     .setContentTitle("有新的日程可进行")
-                    .setContentText(toDo.getInfo());
+                    .setContentText(toDoItem.getInfo());
             NotificationCompat.InboxStyle inboxStyle =
                     new NotificationCompat.InboxStyle();
             String[] events = new String[5];
-            events[0] = "最晚结束时间 " + toDo.getDeadline();
-            events[1] = "最佳结束时间 " + toDo.getFinishTime();
-            events[2] = TimeUtil.getRemainTime(toDo.getFinishTime());
-            events[3] = "开始时间 " + TimeUtil.longToString(Long.valueOf(toDo.getStartTime()), TimeUtil.FORMAT_DATA_TIME_SECOND);
-            if (toDo.getPoint() != null)
-                events[4] = toDo.getLoc();
-            inboxStyle.setBigContentTitle(toDo.getInfo());
+            events[0] = "最晚结束时间 " + TimeUtil.defaultFormat(toDoItem.getDeadline());
+            events[1] = "最佳结束时间 " + TimeUtil.defaultFormat(toDoItem.getFinishTime());
+            events[2] = TimeUtil.getRemainTime(toDoItem.getFinishTime());
+            events[3] = "开始时间 " + TimeUtil.longToString(toDoItem.getStartTime(), TimeUtil.FORMAT_DATA_TIME_SECOND);
+            if (toDoItem.getPoint() != null)
+                events[4] = toDoItem.getLoc();
+            inboxStyle.setBigContentTitle(toDoItem.getInfo());
             for (String event : events) {
 
                 inboxStyle.addLine(event);
@@ -375,134 +349,88 @@ public class MainActivity extends BaseActivity implements MainTodoAdapter.onItem
             mBuilder.setContentIntent(notifyPendingIntent);
             mBuilder.setAutoCancel(true);
             mBuilder.setVibrate(new long[]{1000, 500, 1000});
-            mNotificationManager.notify(toDo.getCreateTime().hashCode(), mBuilder.build());
+            mNotificationManager.notify(toDoItem.getCreateTime().hashCode(), mBuilder.build());
         }
     }
 
-    public void  onEventMainThread(String type){
-        if(type.equals("1"))
-        {
-            for (ToDo t :
-                    toDos) {
-                t.setWeight(SortManager.getSortWeight(t.getImportant(), t.getUrgent(), t.getStatus()));
-                values.clear();
-                values.put(ToDoDao.COLUMN_WEIGHT, String.valueOf(t.getWeight()));
-                DBManager.getManager().updateTodo(values, t.getCreateTime());
-            }
-            for (ToDo t :
-                    timeOutTodos) {
-                t.setWeight(SortManager.getSortWeight(t.getImportant(), t.getUrgent(), t.getStatus()));
-                values.clear();
-                values.put(ToDoDao.COLUMN_WEIGHT, String.valueOf(t.getWeight()));
-                DBManager.getManager().updateTodo(values, t.getCreateTime());
-            }
-            if (adapter != null) {
-                Collections.sort(toDos);
-                adapter.notifyDataSetChanged();
-            }
-            if (rAdapter != null)
-                rAdapter.notifyDataSetChanged();
-            drawer.closeDrawer(GravityCompat.START);
-        }
-    }
+
     public void onEventMainThread(ToDoEvent toDoEvent) {
-        ToDo toDo = toDoEvent.getToDo();
-        if (adapter == null) {
-            adapter = new MainTodoAdapter(this, toDos, true);
-            adapter.setOnItemClickListener(this);
-            recyclerView.setAdapter(adapter);
-        } else {
-            if (toDoEvent.getType() == 0) {
-                adapter.addTodo(0, toDo);
-            } else if (toDoEvent.getType() == 1) {
-                adapter.updateTodo(toDo, toDoEvent.getPos());
+        Todo todo = toDoEvent.getTodo();
+        switch (toDoEvent.getType()) {
+            case ToDoEvent.EVENT_ORDER_UPDATE:
+                adapter.notifyItemChanged(toDoEvent.getPos());
+                break;
+            case ToDoEvent.EVENT_ORDER_DONE:
+                adapter.addTodo(0,todo);
+                break;
+            case ToDoEvent.REFRESH_TODO:
+                adapter.notifyDataSetChanged();
+                rAdapter.notifyDataSetChanged();
+                break;
+            case ToDoEvent.EVENT_ADD:
+                adapter.addTodo(0, todo);
+                break;
+            case ToDoEvent.EVENT_UPDATE:
+                adapter.updateTodo(todo, toDoEvent.getPos());
                 if (rAdapter != null && !isMain) {
-                    if (TimeUtil.stringToLong(toDo.getFinishTime(), TimeUtil.FORMAT_DATA_TIME_SECOND)
-                            - System.currentTimeMillis() > 0) {
+                    if (TodoManager.get().isTodoTimeOut(todo)) {
                         values.clear();
-                        values.put(ToDoDao.COLUMN_LEVEL, "1");
-                        DBManager.getManager().updateTodo(values, toDo.getCreateTime());
-                        adapter.addTodo(0, toDo);
+                        values.put(ToDoItemDao.FLAG, TodoDao.FLAG_TIME_OUT);
+                        DBManager.getManager().updateTodo(values, todo.getId());
+                        adapter.addTodo(0, todo);
                         rAdapter.deleteTodo(toDoEvent.getPos());
                     }
                     rAdapter.notifyDataSetChanged();
                 }
-            }
+                break;
+            case ToDoEvent.TODO_NOTIFY:
+                setDynaFresh(toDoEvent.getTodo());
+                break;
+            case ToDoEvent.ONTIME_TO_TIMEOUT:
+                Todo t = toDoEvent.getTodo();
+                values.clear();
+                t.setFlag(TodoDao.FLAG_TIME_OUT);
+                values.put(TodoDao.FLAG,TodoDao.FLAG_TIME_OUT);
+                DBManager.getManager().updateTodo(values, t.getId());
+                adapter.deleteTodo(t);
+                rAdapter.addTodo(0, t);
+                break;
         }
     }
 
     private void initTodo() {
-        toDos = DBManager.getManager().getAllTimeOnTodos();
+        todos = DBManager.getManager().getAllTimeOnTodos();
         timeOutTodos = DBManager.getManager().getAllTimeOutTodos();
-        if (toDos == null) {
+
+        startService(new Intent(this, WorkService.class));
+
+        if (todos == null) {
             Show("没有待办记录");
+            todos = new ArrayList<>();
+            adapter = new MainTodoAdapter(this, todos, true);
+            adapter.setOnItemClickListener(this);
+            recyclerView.setAdapter(adapter);
+
         } else {
-            Collections.sort(toDos);
-            adapter = new MainTodoAdapter(this, toDos, true);
+            TodoManager.get().setTodos(todos);
+            Collections.sort(todos);
+            adapter = new MainTodoAdapter(this, todos, true);
             adapter.setOnItemClickListener(this);
             recyclerView.setAdapter(adapter);
         }
-        if (timeOutTodos != null) {
+        if (timeOutTodos == null) {
+            timeOutTodos = new ArrayList<>();
+            rAdapter = new MainTodoAdapter(MainActivity.this, timeOutTodos, false);
+            rAdapter.setOnItemClickListener(this);
+            otRecyclerView.setAdapter(rAdapter);
+        } else {
+            TodoManager.get().setTimeoutTodos(timeOutTodos);
             rAdapter = new MainTodoAdapter(this, timeOutTodos, false);
             rAdapter.setOnItemClickListener(this);
             otRecyclerView.setAdapter(rAdapter);
         }
         values = new ContentValues();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
 
-                while (true) {
-                    try {
-                        Thread.sleep(REFRESH_DELAY);
-                        TIMES++;
-                        if (TIMES >= 10 && !START) {
-                            START = true;
-                            TIMES = 0;
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    if (START) {
-                        START = false;
-                        if (toDos != null) {
-                            int c = 0;
-                            for (ToDo toDo : toDos) {
-
-                                if(c>=level)
-                                {
-                                    break;
-                                }
-                                if (Math.abs(TimeUtil.getStartTime(toDo.getNeedTime(), toDo.getFinishTime())
-                                        - System.currentTimeMillis()) < timeDelay) {
-                                    values.clear();
-                                    values.put(ToDoDao.COLUMN_WEIGHT, String.valueOf((toDo.getWeight() * 2)));
-                                    values.put(ToDoDao.COLUMN_LEVEL, "0");
-                                    DBManager.getManager().updateTodo(values, toDo.getCreateTime());
-                                    Message msg = new Message();
-                                    msg.what = DYNA_FRESH;
-                                    Bundle bundle = new Bundle();
-                                    bundle.putSerializable("TODO", toDo);
-                                    msg.setData(bundle);
-                                    handle.sendMessage(msg);
-                                    c++;
-                                }
-                                if (TimeUtil.stringToLong(toDo.getFinishTime(), TimeUtil.FORMAT_DATA_TIME_SECOND)
-                                        - System.currentTimeMillis() < 0) {
-                                    Message msg = new Message();
-                                    msg.what = SWAP;
-                                    Bundle bundle = new Bundle();
-                                    bundle.putSerializable("TODO", toDo);
-                                    msg.setData(bundle);
-                                    handle.sendMessage(msg);
-                                }
-                            }
-                            START = c != toDos.size();
-                        }
-                    }
-                }
-            }
-        }).start();
     }
 
     @Override
@@ -517,47 +445,54 @@ public class MainActivity extends BaseActivity implements MainTodoAdapter.onItem
 
 
     @Override
-    public void itemClick(ToDo toDo, int pos, int type, boolean isMain) {
+    public void itemClick(Todo todo, int pos, int type, boolean isMain) {
 
         this.isMain = isMain;
-        switch (type)
-        {
+        switch (type) {
             case MainTodoAdapter.CLICK:
-                Intent intent = new Intent(MainActivity.this, AddTodoActivity.class);
-                intent.putExtra("TODO", toDo);
-                intent.putExtra("POS", pos);
-                startActivity(intent);
+                if(todo.getType()==TodoDao.TYPE_SINGLE){
+
+                    Intent intent = new Intent(MainActivity.this, AddTodoActivity.class);
+                    intent.putExtra("TODO_ID", todo.getId());
+                    intent.putExtra("POS", pos);
+                    startActivity(intent);
+                }else if(todo.getType()==TodoDao.TYPE_ORDER){
+                    Intent intent = new Intent(MainActivity.this, AddOrderTodoActivity.class);
+                    intent.putExtra("TODO_ID", todo.getId());
+                    intent.putExtra("POS", pos);
+                    startActivity(intent);
+                }
                 break;
             case MainTodoAdapter.LONG_CLICK:
                 if (isMain)
-                    showDelete(toDo, pos);
+                    showDelete(todo, pos);
                 else {
                     values.clear();
-                    values.put(ToDoDao.COLUMN_LEVEL, "1");
-                    DBManager.getManager().updateTodo(values, toDo.getCreateTime());
-                    adapter.addTodo(0, toDo);
+                    values.put(TodoDao.FLAG, TodoDao.FLAG_DONE);
+                    DBManager.getManager().updateTodoLable(values, todo.getId());
+                    adapter.addTodo(0, todo);
                     rAdapter.deleteTodo(pos);
                 }
                 break;
             case MainTodoAdapter.DRAG:
                 values.clear();
-                values.put(ToDoDao.COLUMN_LEVEL, "-1");
-                DBManager.getManager().updateTodo(values, toDo.getCreateTime());
-                toDos.remove(toDo);
+                values.put(ToDoItemDao.FLAG, TodoDao.FLAG_SWAP);
+                DBManager.getManager().updateTodoLable(values, todo.getId());
+                todos.remove(todo);
                 adapter.notifyDataSetChanged();
                 break;
         }
     }
 
 
-    private void showDelete(final ToDo toDo, final int pos) {
+    private void showDelete(final Todo todo, final int pos) {
         new AlertDialog.Builder(this, R.style.MyDialogStyleTop)
                 .setTitle("你确定删除此个日程安排吗？")
                 .setMessage("删除后将不能恢复！！")
                 .setPositiveButton("删除", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        DBManager.getManager().deleteTodo(toDo.getCreateTime());
+                        DBManager.getManager().deleteTodo(todo.getId());
                         adapter.deleteTodo(pos);
                         adapter.notifyItemRemoved(pos);
                     }
@@ -571,17 +506,22 @@ public class MainActivity extends BaseActivity implements MainTodoAdapter.onItem
         if (bdLocation != null) {
             LatLng latLng = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());
             if (adapter != null) {
-                List<ToDo> toDos = adapter.getToDos();
-                if (toDos == null || toDos.size() == 0) {
+                List<Todo> todos = adapter.getTodos();
+                if (todos == null || todos.size() == 0) {
                     mLocClient.stop();
                 } else {
-                    for (ToDo t : toDos) {
-                        if (t.getPoint() != null) {
-                            if (DistanceUtil.getDistance(latLng, new LatLng(t.getPoint().getLatitude(), t.getPoint().getLongitude())) < 1000) {
-                                setDynaFresh(t);
-                                Show("当前位置附近有待办事件：" + t.getInfo());
+                    for (Todo t : todos) {
+
+                        for (int i = 0; i < t.getTodos().size(); i++) {
+                            ToDoItem item = t.getTodos().get(i);
+                            if (item.getPoint() != null) {
+                                if (DistanceUtil.getDistance(latLng, new LatLng(item.getPoint().getLatitude(), item.getPoint().getLongitude())) < 1000) {
+                                    setDynaFresh(t);
+                                    Show("当前位置附近有待办事件：" + item.getInfo());
+                                }
                             }
                         }
+
                     }
                 }
             }
@@ -590,10 +530,10 @@ public class MainActivity extends BaseActivity implements MainTodoAdapter.onItem
 
     private void refreshTodos() {
         if (adapter != null) {
-            Collections.sort(adapter.getToDos());
+            Collections.sort(adapter.getTodos());
             adapter.notifyDataSetChanged();
         }
-
+        rAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -615,19 +555,7 @@ public class MainActivity extends BaseActivity implements MainTodoAdapter.onItem
                     refreshTodos();
                     refreshLayout.setRefreshing(false);
                     break;
-                case DYNA_FRESH:
-                    setDynaFresh((ToDo) msg.getData().getSerializable("TODO"));
-                    break;
-                case SWAP:
-                    values.clear();
-                    values.put(ToDoDao.COLUMN_LEVEL, "0");
-                    ToDo toDo = (ToDo) msg.getData().getSerializable("TODO");
-                    if (rAdapter == null)
-                        rAdapter = new MainTodoAdapter(MainActivity.this, timeOutTodos, false);
-                    DBManager.getManager().updateTodo(values, toDo.getCreateTime());
-                    adapter.deleteTodo(toDo);
-                    rAdapter.addTodo(0, toDo);
-                    break;
+
             }
         }
     }

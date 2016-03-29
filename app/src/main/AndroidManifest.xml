@@ -68,7 +68,7 @@
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
-
+        <receiver android:name=".receiver.WorkReceiver"/>
         <service android:name=".services.WorkService" />
         <service
             android:name="com.baidu.location.f"

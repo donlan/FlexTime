@@ -14,6 +14,9 @@ import dong.lan.flextime.utils.SP;
  * 项目：FlexTime
  * 作者：梁桂栋
  * 日期： 2016/2/10  15:57.
+ *
+ * 日程的两级分布队列容量的设置
+ *
  */
 public class SetTodoLevelActivity extends BaseActivity {
 

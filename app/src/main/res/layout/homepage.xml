@@ -21,12 +21,13 @@
             android:src="@mipmap/default_avater" />
 
         <TextView
+            android:text="@string/header_info"
             android:id="@+id/user_info"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:padding="10dp"
-            android:textColor="@color/md_green_100"
+            android:textColor="@color/md_white_1000"
             android:textSize="@dimen/text_size_16" />
 
     </LinearLayout>

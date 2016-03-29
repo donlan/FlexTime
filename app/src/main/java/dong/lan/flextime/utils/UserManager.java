@@ -1,7 +1,5 @@
 package dong.lan.flextime.utils;
 
-import android.content.Context;
-
 import dong.lan.flextime.bean.User;
 
 /**
@@ -13,7 +11,7 @@ public class UserManager {
     private static boolean isLogin;
     private static User user = null;
     private static UserManager manager = null;
-    public static UserManager getManager(Context context)
+    public static UserManager getManager()
     {
         if(manager==null)
             manager = new UserManager();
@@ -23,7 +21,9 @@ public class UserManager {
    public void initUser(User u)
    {
        user = u;
-       isLogin = u==null;
+       isLogin = (u==null);
+       if(user==null)
+           user = new User("Doo");
    }
     public User getUser()
     {

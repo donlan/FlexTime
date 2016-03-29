@@ -21,6 +21,9 @@ import dong.lan.flextime.utils.UserManager;
  * 项目：FlexTime
  * 作者：梁桂栋
  * 日期： 3/12/2016  21:06.
+ *
+ * 用户注册
+ *
  */
 public class Fragment_Register extends BaseFragment {
     @Bind(R.id.login_password)
@@ -53,8 +56,7 @@ public class Fragment_Register extends BaseFragment {
                 user.login(getActivity(), new SaveListener() {
                     @Override
                     public void onSuccess() {
-                        UserManager.getManager(getActivity().getApplicationContext()).initUser(BmobUser.getCurrentUser(getActivity(), User.class));
-                        UserManager.getManager(getActivity().getApplicationContext()).setLogin(true);
+                        UserManager.getManager().initUser(BmobUser.getCurrentUser(getActivity(), User.class));
                         getActivity().finish();
                     }
 

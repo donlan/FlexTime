@@ -31,7 +31,13 @@ import dong.lan.flextime.R;
 import dong.lan.flextime.adapter.BaseListAdapter;
 
 /**
- * Created by 桂栋 on 2015/8/4.
+ * 项目：FlexTime
+ * 作者：梁桂栋
+ * 日期： 2015/8/4  05:48.
+ *
+ *
+ * 离线地图管理
+ *
  */
 public class OfflineMapActivity  extends  BaseActivity implements MKOfflineMapListener, View.OnClickListener, AdapterView.OnItemClickListener {
 
