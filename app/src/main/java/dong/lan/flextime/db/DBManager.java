@@ -60,9 +60,10 @@ public class DBManager {
                     values.put(ToDoItemDao.COLUMN_DONE_ONTIME, toDoItem.isDoneOnTime() ? "1" : "0");
                     values.put(ToDoItemDao.COLUMN_FINISH_TIME, toDoItem.getFinishTime());
                     values.put(ToDoItemDao.COLUMN_START_TIME, toDoItem.getStartTime());
-                    values.put(ToDoItemDao.COLUMN_WEIGHT, toDoItem.getWeight() + "");
+                    values.put(ToDoItemDao.COLUMN_WEIGHT, toDoItem.getWeight());
                     values.put(ToDoItemDao.COLUMN_LOC, toDoItem.getLoc());
-                    values.put(ToDoItemDao.FLAG, toDoItem.getStatus() + "");
+                    values.put(ToDoItemDao.FLAG, toDoItem.getFlag());
+                    values.put(ToDoItemDao.COLUMN_STATUS,toDoItem.getStatus());
                     if (toDoItem.getPoint() != null) {
                         values.put(ToDoItemDao.COLUMN_LNG, toDoItem.getPoint().getLongitude() + "");
                         values.put(ToDoItemDao.COLUMN_LAT, toDoItem.getPoint().getLatitude() + "");
@@ -264,12 +265,13 @@ public class DBManager {
         return null;
     }
 
+
     synchronized public List<Todo> getAllTimeOnTodos() {
 
         SQLiteDatabase db = helper.getReadableDatabase();
         if (db.isOpen()) {
             Cursor cursor = db.rawQuery("select * from " + TodoDao.TABLE_NAME
-                    + " where flag = ?  order by " + TodoDao.WEIGHT + " desc", new String[]{""+TodoDao.FLAG_ON});
+                    + " where flag <= ?  order by " + TodoDao.WEIGHT + " desc", new String[]{""+TodoDao.FLAG_ON});
             List<Todo> todos = new ArrayList<>();
 
             if (cursor.moveToFirst()) {
@@ -292,6 +294,7 @@ public class DBManager {
     }
 
 
+
     synchronized public void updateTodo(Todo todo)
     {
         SQLiteDatabase db = helper.getWritableDatabase();
@@ -310,6 +313,7 @@ public class DBManager {
         {
             ContentValues values = new ContentValues();
             values.put(TodoDao.WEIGHT,todo.getWeight());
+            values.put(TodoDao.FLAG,todo.getFlag());
             db.update(TodoDao.TABLE_NAME,values,"id = ? ",new String[]{todo.getId()});
         }
     }
@@ -320,6 +324,7 @@ public class DBManager {
         {
             ContentValues values = new ContentValues();
             values.put(TodoDao.WEIGHT,todo.getWeight());
+            values.put(TodoDao.FLAG,todo.getFlag());
             db.update(TodoDao.TABLE_NAME,values,"id = ? ",new String[]{todo.getId()});
         }
     }
@@ -348,10 +353,11 @@ public class DBManager {
             values.put(ToDoItemDao.COLUMN_DONE_ONTIME, toDoItem.isDoneOnTime() ? "1" : "0");
             values.put(ToDoItemDao.COLUMN_FINISH_TIME, toDoItem.getFinishTime());
             values.put(ToDoItemDao.COLUMN_START_TIME, toDoItem.getStartTime());
-            values.put(ToDoItemDao.COLUMN_WEIGHT, toDoItem.getWeight() + "");
+            values.put(ToDoItemDao.COLUMN_WEIGHT, toDoItem.getWeight());
             values.put(ToDoItemDao.COLUMN_LOC, toDoItem.getLoc());
             values.put(ToDoItemDao.FLAG, toDoItem.getFlag());
             values.put(ToDoItemDao.COLUMN_DEADLINE, toDoItem.getDeadline());
+            values.put(ToDoItemDao.COLUMN_STATUS,toDoItem.getStatus());
             if (toDoItem.getPoint() != null) {
                 values.put(ToDoItemDao.COLUMN_LNG, toDoItem.getPoint().getLongitude() + "");
                 values.put(ToDoItemDao.COLUMN_LAT, toDoItem.getPoint().getLatitude() + "");
@@ -379,6 +385,7 @@ public class DBManager {
             values.put(ToDoItemDao.COLUMN_WEIGHT, toDoItem.getWeight() + "");
             values.put(ToDoItemDao.COLUMN_LOC, toDoItem.getLoc());
             values.put(ToDoItemDao.FLAG, toDoItem.getFlag());
+            values.put(ToDoItemDao.COLUMN_STATUS,toDoItem.getStatus());
             values.put(ToDoItemDao.COLUMN_DEADLINE, toDoItem.getDeadline());
             values.put(ToDoItemDao.COLUMN_WEIGHT, SortManager.getSortWeight(toDoItem));
             if (toDoItem.getPoint() != null) {
