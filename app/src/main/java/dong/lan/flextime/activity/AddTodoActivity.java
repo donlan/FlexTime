@@ -314,13 +314,14 @@ public class AddTodoActivity extends BaseActivity implements View.OnClickListene
         String needTime = setNeedTime.getText().toString();
 
 
+        int status = levelHigh.isChecked() ? Config.LEVEL_HIGH : (levelMid.isChecked() ? Config.LEVEL_NORMAL : Config.LEVEL_LOW);
         if (ADD) {
             ToDoItem item = TodoManager.get().addTodoItem(todo,
                     info.getText().toString(),
                     setBestTimeText.getText().toString(),
                     setDeadlineText.getText().toString(),
                     needTime,
-                    levelHigh.isChecked() ? Config.LEVEL_HIGH : (levelMid.isChecked() ? Config.LEVEL_NORMAL : Config.LEVEL_LOW),
+                    status,
                     loc,
                     impoSeekBar.getProgress(),
                     urgentSeekBar.getProgress(), 0, remindCheck.isChecked());
@@ -339,7 +340,7 @@ public class AddTodoActivity extends BaseActivity implements View.OnClickListene
                     setBestTimeText.getText().toString(),
                     setDeadlineText.getText().toString(),
                     needTime,
-                    levelHigh.isChecked() ? Config.LEVEL_HIGH : (levelMid.isChecked() ? Config.LEVEL_NORMAL : Config.LEVEL_LOW),
+                    status,
                     loc,
                     impoSeekBar.getProgress(),
                     urgentSeekBar.getProgress(), 0, remindCheck.isChecked());
