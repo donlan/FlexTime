@@ -25,7 +25,7 @@ public class SortManager {
      */
     public static double getSortWeight(ToDoItem toDoItem)
     {
-        double d = (toDoItem.getStartTime()-System.currentTimeMillis())/toDoItem.getNeedTime();
+        double d = toDoItem.getNeedTime()/(toDoItem.getStartTime()-System.currentTimeMillis());
         return (toDoItem.getImportant()*IMP+URG*toDoItem.getUrgent())* Config.getLevelFactor(toDoItem.getStatus())*d;
     }
 
