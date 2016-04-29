@@ -17,7 +17,7 @@ public class ToDoEvent {
     public static final int REFRESH_TODO=4;         //刷新日程列表
     public static final int ONTIME_TO_TIMEOUT =5;   //将超时日程移动到超时列表
     public static final int TODO_NOTIFY=6;          //日程状态栏提醒
-
+    public static final int NEAR_NOTIFY=7;          //附近日程提醒
     private Todo todo; //事件传递的日程
     private int type;  //事件类型
     private int pos;   //对应RecycleView的layout position
