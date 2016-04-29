@@ -435,12 +435,7 @@ public class AddOrderTodoActivity extends BaseActivity implements View.OnClickLi
                                 urgentSeekBar.getProgress(), 0, remindCheck.isChecked());
                         todo.addTodoItem(item);
                         adapter.add(item);
-                    /*
-                    保存当前日程内容的分词结果到数据库
-                     */
-                    for (String key : map.keySet()) {
-                        DBManager.getManager().addKeyword(key, String.valueOf(TimeUtil.getLongNeedTime(needTime.substring(needTime.lastIndexOf(">") + 2))), impoSeekBar.getProgress(), urgentSeekBar.getProgress());
-                    }
+
                     count++;
                     seqText.setText(String.valueOf(count));
                 } else {
@@ -457,7 +452,12 @@ public class AddOrderTodoActivity extends BaseActivity implements View.OnClickLi
                                     urgentSeekBar.getProgress(), 0, remindCheck.isChecked());
                         }
                 }
-
+                /*
+                    保存当前日程内容的分词结果到数据库
+                    */
+                for (String key : map.keySet()) {
+                    DBManager.getManager().addKeyword(key, String.valueOf(TimeUtil.getLongNeedTime(needTime.substring(needTime.lastIndexOf(">") + 2))), impoSeekBar.getProgress(), urgentSeekBar.getProgress());
+                }
                 clearInput();
                 break;
         }
@@ -484,6 +484,7 @@ public class AddOrderTodoActivity extends BaseActivity implements View.OnClickLi
             TodoManager.get().updateTodo(todo);
             EventBus.getDefault().post(new ToDoEvent(todo,ToDoEvent.EVENT_ORDER_UPDATE,pos));
         }
+
         finish();
     }
 
