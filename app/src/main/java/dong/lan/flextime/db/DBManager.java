@@ -11,6 +11,7 @@ import java.util.List;
 
 import cn.bmob.v3.datatype.BmobGeoPoint;
 import dong.lan.flextime.bean.KeyWord;
+import dong.lan.flextime.bean.Sort;
 import dong.lan.flextime.bean.ToDoItem;
 import dong.lan.flextime.bean.Todo;
 import dong.lan.flextime.bean.User;
@@ -531,4 +532,102 @@ public class DBManager {
             }
         }
     }
+
+    /*
+    添加一个排序计算方式
+     */
+    synchronized public void addSortItem(Sort sort){
+        SQLiteDatabase db = helper.getReadableDatabase();
+        if (db.isOpen()) {
+            ContentValues values = new ContentValues();
+            values.put("tag", sort.getTag());
+            values.put("isSelect", sort.isSelect()?1:0);
+            values.put("method", sort.getMethod());
+            db.replace("sort", null, values);
+        }
+    }
+
+    /*
+    添加一个排序计算方式
+     */
+    synchronized public void addSortItem(List<Sort> sorts){
+        SQLiteDatabase db = helper.getReadableDatabase();
+        if (db.isOpen()) {
+            ContentValues values = new ContentValues();
+            for (int i = 0;i<sorts.size();i++)
+            {
+                values.clear();
+                Sort sort = sorts.get(i);
+                values.put("tag", sort.getTag());
+                values.put("isSelect", sort.isSelect()?1:0);
+                values.put("method", sort.getMethod());
+                db.replace("sort", null, values);
+            }
+
+        }
+    }
+
+    /*
+    修改一个排序计算方式
+     */
+    synchronized public void updateSortItem(Sort sort){
+        SQLiteDatabase db = helper.getWritableDatabase();
+        if (db.isOpen()) {
+            ContentValues values = new ContentValues();
+            values.put("isSelect", sort.isSelect()?1:0);
+            values.put("method", sort.getMethod());
+            db.update("sort", values, "tag =? ", new String[]{String.valueOf(sort.getTag())});
+        }
+    }
+
+    /*
+    修改一个排序计算方式
+     */
+    synchronized public void setSortItemSelect(int tag,boolean select){
+        SQLiteDatabase db = helper.getWritableDatabase();
+        if (db.isOpen()) {
+            ContentValues values = new ContentValues();
+            values.put("isSelect", select?1:0);
+            db.update("sort", values, "tag =? ", new String[]{String.valueOf(tag)});
+            values.clear();
+            values.put("isSelect", select?0:1);
+            db.update("sort", values, "tag !=? ", new String[]{String.valueOf(tag)});
+        }
+    }
+
+    /*
+    删除一个排序计算方式
+     */
+    synchronized public void deleteSortItem(Sort sort){
+        SQLiteDatabase db = helper.getWritableDatabase();
+        if (db.isOpen())
+            db.delete("sort","tag =? ", new String[]{String.valueOf(sort.getTag())});
+    }
+
+
+    synchronized public List<Sort> getAllSortItem(){
+        SQLiteDatabase db = helper.getReadableDatabase();
+        if (db.isOpen()) {
+            Cursor cursor = db.rawQuery("select * from sort",null);
+            if (!cursor.moveToFirst()) {
+                return null;
+            }
+            List<Sort> sorts = new ArrayList<>();
+            int tag = cursor.getColumnIndex("tag");
+            int isSelect = cursor.getColumnIndex("isSelect");
+            int method = cursor.getColumnIndex("method");
+            do {
+                Sort sort = new Sort();
+                sort.setTag(cursor.getInt(tag));
+                sort.setSelect(cursor.getInt(isSelect) == 1);
+                sort.setMethod(cursor.getString(method));
+                sorts.add(sort);
+            } while (cursor.moveToNext());
+            cursor.close();
+            return sorts;
+        }
+
+        return null;
+    }
+
 }

@@ -11,7 +11,7 @@ import dong.lan.flextime.dao.ToDoItemDao;
  */
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "DB_FlexTime.db";
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
 
     private static final String CREATE_TIME_TABLE = "create table "
             + ToDoItemDao.COLUMN_TABLE_NAME + " ("
@@ -39,6 +39,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String TODO_TABLE="create table todo(id text primary key,time text,user text,type smallint,weight float,flag smallint)";
     private static final String CREATE_KEYWORD_TABLE="create table keyword(word text primary key,time text,imp text,urg text);";
+    private static final String SORT_TABLE="create table sort(tag int primary key,isSelect int , method text)";
+
+
     private DBHelper(Context context) {
         super(context, DB_NAME, null, VERSION);
     }
@@ -57,6 +60,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(TODO_TABLE);
         db.execSQL(CREATE_TIME_TABLE);
         db.execSQL(CREATE_KEYWORD_TABLE);
+
     }
 
     public void closeDB() {
@@ -73,6 +77,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        if(newVersion==2){
+            db.execSQL(SORT_TABLE);
+        }
     }
 }
