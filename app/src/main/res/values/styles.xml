@@ -48,4 +48,24 @@
         <item name="android:windowEnterAnimation">@anim/push_top_in2</item>
         <item name="android:windowExitAnimation">@anim/push_top_out2</item>
     </style>
+    <style name="draw_text_item">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:drawableLeft">@mipmap/dot_grey</item>
+        <item name="android:drawablePadding">16dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="mode_check">
+        <item name="android:layout_width">@dimen/size_60</item>
+        <item name="android:layout_height">@dimen/size_60</item>
+        <item name="android:background">@drawable/mode_check</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/md_white_1000</item>
+        <item name="android:gravity">center</item>
+        <item name="android:button">@null</item>
+    </style>
 </resources>
