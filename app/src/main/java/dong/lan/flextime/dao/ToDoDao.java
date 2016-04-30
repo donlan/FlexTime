@@ -10,7 +10,6 @@ public class TodoDao {
     public static final int TYPE_SINGLE=1;
     public static final int TYPE_MUTIL=2;
     public static final int TYPE_ORDER=3;
-
     public static final int FLAG_FINISH=8;
     public static final int FLAG_ON=4;
     public static final int FLAG_TIME_OUT=6;
@@ -18,7 +17,6 @@ public class TodoDao {
     public static final int FLAG_SWAP = 0;
     public static final int FLAG_DONE = 7;
     public static final int FLAG_DOIT =5;
-
     public static final String TABLE_NAME="todo";
     public static final String USER="user";
     public static final String TYPE="type";
