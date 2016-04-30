@@ -49,6 +49,7 @@
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:taskAffinity="" />
+        <activity android:name=".activity.CustomSortActivity"/>
         <activity android:name=".activity.AddMapLocActivity" />
         <activity android:name=".activity.BaseActivity" />
         <activity android:name=".activity.OfflineMapActivity" />
