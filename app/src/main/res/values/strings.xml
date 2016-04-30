@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FlexTime</string>
+    <string name="app_name">時間流</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -18,4 +18,5 @@
     <string name="start_lint_text">开始你的高效日程管理</string>
     <string name="start_schedule_your_time">自动给你安排日程</string>
     <string name="start_easy_manage_time">日程安排更轻松</string>
+    <string name="exit">退出</string>
 </resources>
