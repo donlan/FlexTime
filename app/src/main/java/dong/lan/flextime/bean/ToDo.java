@@ -108,7 +108,4 @@ public class Todo implements Comparable<Todo> {
             return 0;
         return 1;
     }
-
-
-
 }
