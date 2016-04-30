@@ -32,7 +32,6 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.utils.DistanceUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,6 +40,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.update.BmobUpdateAgent;
 import de.greenrobot.event.EventBus;
 import dong.lan.flextime.Config;
@@ -68,8 +68,7 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
     boolean isMain = true;
     int status;
     int mode;
-    int levelFirst;
-    int levelSecond;
+
     int level;
     List<Todo> todos;
     List<Todo> timeOutTodos;
@@ -90,6 +89,8 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
     SwipeRefreshLayout refreshLayout;
     @Bind(R.id.drawer_reset_weight)
     TextView resetWeight;
+    @Bind(R.id.login_out)
+    TextView loginOut;
 
     @Bind(R.id.status_group)
     RadioGroup statusGroup;
@@ -119,6 +120,10 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
         startActivity(new Intent(MainActivity.this, UserCenterActivity.class));
     }
 
+    @OnClick(R.id.drawer_sort)
+    public void toSortAc(){
+        startActivity(new Intent(MainActivity.this, CustomSortActivity.class));
+    }
     private MainTodoAdapter adapter;
     private MainTodoAdapter rAdapter;
     private LocationClient mLocClient;
@@ -214,11 +219,20 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
                     startActivity(new Intent(MainActivity.this, UserCenterActivity.class));
                     //userInfo.setText(BmobUser.getCurrentUser(MainActivity.this, User.class).toString());
                 } else {
-                    userInfo.setText("登录便可可同步日程信息");
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 }
             }
         });
+        if(UserManager.getManager().isLogin()) {
+            loginOut.setVisibility(View.VISIBLE);
+            loginOut.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    BmobUser.logOut(MainActivity.this);
+                    loginOut.setVisibility(View.GONE);
+                }
+            });
+        }
         mLocClient = new LocationClient(this);
         mLocClient.registerLocationListener(this);
         LocationClientOption option = new LocationClientOption();
@@ -239,8 +253,7 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
 
     private void initFactor() {
         SortManager.init(SP.getImp(), SP.getUrg());
-        levelFirst = SP.getLevelFirst();
-        levelSecond = SP.getLevelSecond();
+        TodoManager.get().initLevel(SP.getLevelFirst(),SP.getLevelSecond());
     }
 
     private void changeAndRefresh() {
@@ -252,19 +265,20 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
             return;
         switch (mode) {
             case Config.WORK:
-                level = levelSecond;
+                level = TodoManager.get().getLevelSecond();
                 if (level > todos.size())
                     level = todos.size();
                 break;
             case Config.NORMAL:
-                level = levelFirst;
+                level = todos.size();
+                break;
+            case Config.BUSY:
+                level = TodoManager.get().getLevelFirst();
                 if (level > todos.size())
                     level = todos.size();
                 break;
-            case Config.BUSY:
-                level = todos.size();
-                break;
         }
+        Config.LEVEL = level;
     }
 
     private void setStatusAndMode() {
@@ -279,19 +293,19 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
         switch (mode) {
             case Config.WORK:
                 modeWork.setChecked(true);
-                level = levelSecond;
+                level = TodoManager.get().getLevelSecond();
                 if (level > todos.size())
                     level = todos.size();
                 break;
             case Config.NORMAL:
                 modeNormal.setChecked(true);
-                level = levelFirst;
-                if (level > todos.size())
-                    level = todos.size();
+                level = todos.size();
                 break;
             case Config.BUSY:
                 modeBusy.setChecked(true);
-                level = todos.size();
+                level = TodoManager.get().getLevelFirst();
+                if (level > todos.size())
+                    level = todos.size();
                 break;
         }
         Config.LEVEL = level;
@@ -306,9 +320,9 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
     }
 
 
-    public void setDynaFresh(Todo todo) {
+    public void setDynaFresh(Todo todo,int p) {
         if (todo != null) {
-            ToDoItem toDoItem = todo.getTodos().get(0);
+            ToDoItem toDoItem = todo.getTodos().get(p);
             Intent notifyIntent =
                     new Intent(this, AddTodoActivity.class);
             notifyIntent.putExtra("TODO_ID", todo.getId());
@@ -357,8 +371,25 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
     public void onEventMainThread(ToDoEvent toDoEvent) {
         Todo todo = toDoEvent.getTodo();
         switch (toDoEvent.getType()) {
+            case ToDoEvent.NEAR_NOTIFY:
+                setDynaFresh(todo,toDoEvent.getPos());
+                Show("当前位置附近有待办事件：" + todo.getTodos().get(toDoEvent.getPos()).getInfo());
+                break;
+
             case ToDoEvent.EVENT_ORDER_UPDATE:
+                if(isMain)
                 adapter.notifyItemChanged(toDoEvent.getPos());
+                else{
+                    if(!TodoManager.get().isTodoTimeOut(todo)){
+                        values.clear();
+                        values.put(TodoDao.FLAG, TodoDao.FLAG_ON);
+                        DBManager.getManager().updateTodo(values, todo.getId());
+                        adapter.addTodo(0, todo);
+                        rAdapter.deleteTodo(toDoEvent.getPos());
+                        TodoManager.get().setUserHeadInfo(userInfo);
+                    }
+                }
+                rAdapter.notifyItemChanged(toDoEvent.getPos());
                 break;
             case ToDoEvent.EVENT_ORDER_DONE:
                 adapter.addTodo(0,todo);
@@ -371,20 +402,25 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
                 adapter.addTodo(0, todo);
                 break;
             case ToDoEvent.EVENT_UPDATE:
-                adapter.updateTodo(todo, toDoEvent.getPos());
-                if (rAdapter != null && !isMain) {
-                    if (TodoManager.get().isTodoTimeOut(todo)) {
-                        values.clear();
-                        values.put(ToDoItemDao.FLAG, TodoDao.FLAG_TIME_OUT);
-                        DBManager.getManager().updateTodo(values, todo.getId());
+                boolean swap = false;
+                if(!TodoManager.get().isTodoTimeOut(todo)){
+                    values.clear();
+                    values.put(TodoDao.FLAG, TodoDao.FLAG_ON);
+                    DBManager.getManager().updateTodo(values, todo.getId());
+                    swap = true;
+                }
+                if(isMain && swap) {
+                    adapter.updateTodo(todo, toDoEvent.getPos());
+                }
+                else if ( swap) {
                         adapter.addTodo(0, todo);
                         rAdapter.deleteTodo(toDoEvent.getPos());
-                    }
-                    rAdapter.notifyDataSetChanged();
+                    TodoManager.get().setUserHeadInfo(userInfo);
                 }
+                rAdapter.notifyItemChanged(toDoEvent.getPos());
                 break;
             case ToDoEvent.TODO_NOTIFY:
-                setDynaFresh(toDoEvent.getTodo());
+                setDynaFresh(toDoEvent.getTodo(),0);
                 break;
             case ToDoEvent.ONTIME_TO_TIMEOUT:
                 Todo t = toDoEvent.getTodo();
@@ -403,7 +439,6 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
         timeOutTodos = DBManager.getManager().getAllTimeOutTodos();
 
         startService(new Intent(this, WorkService.class));
-
         if (todos == null) {
             Show("没有待办记录");
             todos = new ArrayList<>();
@@ -412,7 +447,6 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
             recyclerView.setAdapter(adapter);
 
         } else {
-            TodoManager.get().setTodos(todos);
             Collections.sort(todos);
             adapter = new MainTodoAdapter(this, todos, true);
             adapter.setOnItemClickListener(this);
@@ -424,13 +458,16 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
             rAdapter.setOnItemClickListener(this);
             otRecyclerView.setAdapter(rAdapter);
         } else {
-            TodoManager.get().setTimeoutTodos(timeOutTodos);
+
             rAdapter = new MainTodoAdapter(this, timeOutTodos, false);
             rAdapter.setOnItemClickListener(this);
             otRecyclerView.setAdapter(rAdapter);
         }
+        TodoManager.get().setTimeoutTodos(timeOutTodos);
+        TodoManager.get().setTodos(todos);
         values = new ContentValues();
 
+        TodoManager.get().setUserHeadInfo(userInfo);
     }
 
     @Override
@@ -445,7 +482,7 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
 
 
     @Override
-    public void itemClick(Todo todo, int pos, int type, boolean isMain) {
+    public void itemClick(final Todo todo,final  int pos, int type, boolean isMain) {
 
         this.isMain = isMain;
         switch (type) {
@@ -467,11 +504,19 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
                 if (isMain)
                     showDelete(todo, pos);
                 else {
-                    values.clear();
-                    values.put(TodoDao.FLAG, TodoDao.FLAG_DONE);
-                    DBManager.getManager().updateTodoLable(values, todo.getId());
-                    adapter.addTodo(0, todo);
-                    rAdapter.deleteTodo(pos);
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setMessage("已完成的日程将不会出现在日程列表中")
+                            .setMessage("标记此日程为已完成？")
+                            .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    values.clear();
+                                    values.put(TodoDao.FLAG, TodoDao.FLAG_DONE);
+                                    DBManager.getManager().updateTodoLable(values, todo.getId());
+                                    adapter.addTodo(0, todo);
+                                    rAdapter.deleteTodo(pos);
+                                }
+                            }).setNegativeButton("取消",null).show();
                 }
                 break;
             case MainTodoAdapter.DRAG:
@@ -504,25 +549,12 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
     @Override
     public void onReceiveLocation(BDLocation bdLocation) {
         if (bdLocation != null) {
-            LatLng latLng = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());
             if (adapter != null) {
                 List<Todo> todos = adapter.getTodos();
                 if (todos == null || todos.size() == 0) {
                     mLocClient.stop();
                 } else {
-                    for (Todo t : todos) {
-
-                        for (int i = 0; i < t.getTodos().size(); i++) {
-                            ToDoItem item = t.getTodos().get(i);
-                            if (item.getPoint() != null) {
-                                if (DistanceUtil.getDistance(latLng, new LatLng(item.getPoint().getLatitude(), item.getPoint().getLongitude())) < 1000) {
-                                    setDynaFresh(t);
-                                    Show("当前位置附近有待办事件：" + item.getInfo());
-                                }
-                            }
-                        }
-
-                    }
+                    EventBus.getDefault().post(new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude()));
                 }
             }
         }
