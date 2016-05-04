@@ -15,4 +15,5 @@
     <dimen name="level_radio_size">50dp</dimen>
     <dimen name="size_80">80dp</dimen>
     <dimen name="size_60">60dp</dimen>
+    <dimen name="listCorner">12dp</dimen>
 </resources>

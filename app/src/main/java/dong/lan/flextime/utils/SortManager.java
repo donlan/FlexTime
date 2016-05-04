@@ -12,9 +12,9 @@ public class SortManager {
     public static double IMP = 3.5; //默认的重要性权重因子
     public static double URG = 2.5;//默认的紧急性权重因子
     public static int TAG = 1;
-    public static String SORT_0="重要性 ×  重要因子 + 紧急性 × 紧急因子" ;
-    public static String SORT_1="（重要性 ×  重要因子 + 紧急性 × 紧急因子）× 事件效果";
-    public static String SORT_2="（（重要性 ×  重要因子 + 紧急性 × 紧急因子）× 事件效果）× 时间比重";
+    public static String SORT_0=" 重要性 ×  重要因子 + 紧急性 × 紧急因子" ;
+    public static String SORT_1=" ( 重要性 ×  重要因子 + 紧急性 × 紧急因子 ) × 事件效果";
+    public static String SORT_2=" (( 重要性 ×  重要因子 + 紧急性 × 紧急因子 ) × 事件效果 ) × 时间比重";
     /*
     根据 紧急性 重要性 用户状态 设置权重因子
      */
@@ -45,9 +45,8 @@ public class SortManager {
             case 2:
                 double d = (toDoItem.getStartTime() - System.currentTimeMillis())/toDoItem.getNeedTime();
                 return (toDoItem.getImportant() * IMP + URG * toDoItem.getUrgent()) * Config.getLevelFactor(toDoItem.getStatus()) * d;
-
+            default:
+                return (toDoItem.getImportant() * IMP + URG * toDoItem.getUrgent()) * Config.getLevelFactor(toDoItem.getStatus());
         }
-
-        return 0;
     }
 }

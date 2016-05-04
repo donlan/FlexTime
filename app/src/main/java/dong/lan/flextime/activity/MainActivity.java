@@ -20,6 +20,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
@@ -50,7 +51,6 @@ import dong.lan.flextime.adapter.MainTodoAdapter;
 import dong.lan.flextime.bean.ToDoEvent;
 import dong.lan.flextime.bean.ToDoItem;
 import dong.lan.flextime.bean.Todo;
-import dong.lan.flextime.dao.ToDoItemDao;
 import dong.lan.flextime.dao.TodoDao;
 import dong.lan.flextime.db.DBManager;
 import dong.lan.flextime.services.WorkService;
@@ -59,8 +59,9 @@ import dong.lan.flextime.utils.SortManager;
 import dong.lan.flextime.utils.TimeUtil;
 import dong.lan.flextime.utils.TodoManager;
 import dong.lan.flextime.utils.UserManager;
+import dong.lan.flextime.view.MyItemTouchHelper;
 
-public class MainActivity extends BaseActivity implements onItemClickListener, BDLocationListener, SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends BaseActivity implements onItemClickListener, BDLocationListener, SwipeRefreshLayout.OnRefreshListener{
 
     public static final int REFRESH = 1;
     private static final int SWIPE_REFRESH = 2;
@@ -185,6 +186,10 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
                         .getDisplayMetrics()));
         refreshLayout.setOnRefreshListener(this);
         recyclerView.setHasFixedSize(true);
+
+
+
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
@@ -452,6 +457,10 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
             adapter.setOnItemClickListener(this);
             recyclerView.setAdapter(adapter);
         }
+        ItemTouchHelper.Callback helperCallback  = new MyItemTouchHelper(adapter);
+        ItemTouchHelper helper = new ItemTouchHelper(helperCallback);
+        helper.attachToRecyclerView(recyclerView);
+
         if (timeOutTodos == null) {
             timeOutTodos = new ArrayList<>();
             rAdapter = new MainTodoAdapter(MainActivity.this, timeOutTodos, false);
@@ -501,9 +510,7 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
                 }
                 break;
             case MainTodoAdapter.LONG_CLICK:
-                if (isMain)
-                    showDelete(todo, pos);
-                else {
+                if (!isMain){
                     new AlertDialog.Builder(MainActivity.this)
                             .setMessage("已完成的日程将不会出现在日程列表中")
                             .setMessage("标记此日程为已完成？")
@@ -519,13 +526,7 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
                             }).setNegativeButton("取消",null).show();
                 }
                 break;
-            case MainTodoAdapter.DRAG:
-                values.clear();
-                values.put(ToDoItemDao.FLAG, TodoDao.FLAG_SWAP);
-                DBManager.getManager().updateTodoLable(values, todo.getId());
-                todos.remove(todo);
-                adapter.notifyDataSetChanged();
-                break;
+
         }
     }
 
@@ -573,6 +574,8 @@ public class MainActivity extends BaseActivity implements onItemClickListener, B
         handle.sendEmptyMessageDelayed(REFRESH, 1000);
         refreshLayout.setRefreshing(false);
     }
+
+
 
 
     class MyHandle extends Handler {

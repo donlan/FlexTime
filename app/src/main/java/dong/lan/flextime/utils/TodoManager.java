@@ -79,11 +79,11 @@ public class TodoManager {
         return todoManager;
     }
 
-    public void initLevel(int levelFirst,int levelSecond)
-    {
+    public void initLevel(int levelFirst, int levelSecond) {
         this.levelFirst = levelFirst;
         this.levelSecond = levelSecond;
     }
+
     public void setTodos(List<Todo> todos) {
         this.todos = todos;
     }
@@ -157,7 +157,7 @@ public class TodoManager {
     public void addOrderTodo(Todo todo, int pos) {
         todo = caluTodoWeight(todo);
         DBManager.getManager().addAToDo(todo);
-        EventBus.getDefault().post(new ToDoEvent(todo,ToDoEvent.EVENT_ORDER_DONE,pos));
+        EventBus.getDefault().post(new ToDoEvent(todo, ToDoEvent.EVENT_ORDER_DONE, pos));
     }
 
     /*
@@ -176,11 +176,11 @@ public class TodoManager {
      */
     public ToDoItem updateTodoItem(ToDoItem item, String info, String bestTime, String deadline, String needTime, int status,
                                    LocDes loc, int imp, int urg, int seq, boolean isRemind) {
-        needTime= needTime.substring(needTime.indexOf(">")+2);
-        bestTime= bestTime.substring(bestTime.indexOf(">")+2);
-        deadline= deadline.substring(deadline.indexOf(">")+2);
+        needTime = needTime.substring(needTime.indexOf(">") + 2);
+        bestTime = bestTime.substring(bestTime.indexOf(">") + 2);
+        deadline = deadline.substring(deadline.indexOf(">") + 2);
         item.setInfo(info);
-        if(loc!=null) {
+        if (loc != null) {
             item.setLoc(loc.getDes());
             item.setPoint(new BmobGeoPoint(loc.getLatLng().longitude, loc.getLatLng().latitude));
         }
@@ -193,7 +193,7 @@ public class TodoManager {
         item.setRemind(isRemind ? 1 : 0);
         item.setImportant(imp);
         item.setUrgent(urg);
-        item.setFlag(System.currentTimeMillis()-item.getDeadline()>0?TodoDao.FLAG_TIME_OUT:TodoDao.FLAG_ON);
+        item.setFlag(System.currentTimeMillis() - item.getDeadline() > 0 ? TodoDao.FLAG_TIME_OUT : TodoDao.FLAG_ON);
         item.setFinishTime(TimeUtil.defaultTime(deadline));
         item.setDeadline(TimeUtil.defaultTime(bestTime));
         DBManager.getManager().updateTodoItem(item);
@@ -206,11 +206,11 @@ public class TodoManager {
      */
     public ToDoItem modefyTodoItem(ToDoItem item, String info, String bestTime, String deadline, String needTime, int status,
                                    LocDes loc, int imp, int urg, int seq, boolean isRemind) {
-        needTime= needTime.substring(needTime.indexOf(">")+2);
-        bestTime= bestTime.substring(bestTime.indexOf(">")+2);
-        deadline= deadline.substring(deadline.indexOf(">")+2);
+        needTime = needTime.substring(needTime.indexOf(">") + 2);
+        bestTime = bestTime.substring(bestTime.indexOf(">") + 2);
+        deadline = deadline.substring(deadline.indexOf(">") + 2);
         item.setInfo(info);
-        if(loc!=null) {
+        if (loc != null) {
             item.setLoc(loc.getDes());
             item.setPoint(new BmobGeoPoint(loc.getLatLng().longitude, loc.getLatLng().latitude));
         }
@@ -235,7 +235,7 @@ public class TodoManager {
         for (int i = 0; i < items.size(); i++) {
             item = items.get(i);
             if (item.getFlag() == TodoDao.FLAG_UPDATE) {
-                item.setFlag(isTodoItemTimeout(item)?TodoDao.FLAG_TIME_OUT:TodoDao.FLAG_ON);
+                item.setFlag(isTodoItemTimeout(item) ? TodoDao.FLAG_TIME_OUT : TodoDao.FLAG_ON);
                 DBManager.getManager().updateTodoItem(item);
             }
         }
@@ -250,19 +250,18 @@ public class TodoManager {
         int outCounter = 0;
         for (int i = 0; i < items.size(); i++) {
             item = items.get(i);
-            w+=item.getWeight();
-            if(item.getFlag()==TodoDao.FLAG_TIME_OUT)
+            w += item.getWeight();
+            if (item.getFlag() == TodoDao.FLAG_TIME_OUT)
                 outCounter++;
         }
-        if(outCounter==items.size()-1)
+        if (outCounter == items.size() - 1)
             todo.setFlag(TodoDao.FLAG_TIME_OUT);
         else
-        todo.setFlag(TodoDao.FLAG_ON);
+            todo.setFlag(TodoDao.FLAG_ON);
         todo.setWeight(w);
         DBManager.getManager().updateTodoWeight(todo);
         return todo;
     }
-
 
 
     /*
@@ -327,17 +326,17 @@ public class TodoManager {
     判断一个日程条目的开始执行时间是否已经超过当前时间
      */
     public boolean isTodoItemTimeout(ToDoItem item) {
-        if(Config.STATUS==Config.GOOD)
-        return item.getFinishTime()- System.currentTimeMillis() < 0;
+        if (Config.STATUS == Config.GOOD)
+            return item.getFinishTime() - System.currentTimeMillis() < 0;
         else
-            return item.getDeadline()- System.currentTimeMillis() < 0;
+            return item.getDeadline() - System.currentTimeMillis() < 0;
     }
 
     /*
     判断一个日程条目是否已经开始
      */
     public boolean isTodoItemStart(ToDoItem item) {
-        return item.getStartTime()- System.currentTimeMillis() > 0;
+        return item.getStartTime() - System.currentTimeMillis() > 0;
     }
 
     /*
@@ -347,8 +346,8 @@ public class TodoManager {
         SparseArray<ToDoItem> items = todo.getTodos();
         int s = items.size();
         for (int i = 0; i < s; i++) {
-           if(isTodoItemTimeout(items.get(i)) )
-               return true;
+            if (isTodoItemTimeout(items.get(i)))
+                return true;
         }
 
         return false;
@@ -361,7 +360,7 @@ public class TodoManager {
     public boolean isTodoItemStartTips(Todo todo, int timeDelay) {
         SparseArray<ToDoItem> items = todo.getTodos();
         for (int i = 0; i < items.size(); i++) {
-            if (Math.abs(items.get(i).getStartTime()- System.currentTimeMillis()) < timeDelay)
+            if (Math.abs(items.get(i).getStartTime() - System.currentTimeMillis()) < timeDelay)
                 return true;
         }
         return false;
@@ -404,15 +403,42 @@ public class TodoManager {
     }
 
 
-    public void setUserHeadInfo(TextView userInfo)
-    {
+    public void setUserHeadInfo(TextView userInfo) {
 
-        StringBuffer stringBuilder = new StringBuffer();
-        stringBuilder.append("共有 ");
-        stringBuilder.append(todos.size());
-        stringBuilder.append(" 个未完成日程.\n");
-        stringBuilder.append(timeoutTodos.size());
-        stringBuilder.append(" 个超时未完成日程。");
-        userInfo.setText(stringBuilder.toString());
+        String stringBuilder = "共有 " +
+                todos.size() +
+                " 个未完成日程.\n" +
+                timeoutTodos.size() +
+                " 个超时未完成日程。";
+        userInfo.setText(stringBuilder);
+    }
+
+    public static void resortWithSwap(final Todo fromTodo, final Todo toTodo) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SparseArray<ToDoItem> items = fromTodo.getTodos();
+                int s = items.size();
+                double w1 = 0;
+                double w2 = 0;
+                for (int i = 0; i < s; i++) {
+                    items.get(i).setImportant((int) (items.get(i).getImportant() - 0.1));
+                    items.get(i).setUrgent((int) (items.get(i).getUrgent() - 0.1));
+                    w1+=SortManager.getSortWeight(items.get(i));
+                }
+
+                SparseArray<ToDoItem> items1 = toTodo.getTodos();
+                int s1 = items1.size();
+                for (int i = 0; i < s1; i++) {
+                    items1.get(i).setImportant((int) (items1.get(i).getImportant() - 0.1));
+                    items1.get(i).setUrgent((int) (items1.get(i).getUrgent() - 0.1));
+                    w2+=SortManager.getSortWeight(items1.get(i));
+                }
+                fromTodo.setWeight(w1);
+                toTodo.setWeight(w2);
+                DBManager.getManager().updateTodoWeight(fromTodo);
+                DBManager.getManager().updateTodoWeight(toTodo);
+            }
+        }).start();
     }
 }

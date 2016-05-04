@@ -1,6 +1,8 @@
 package dong.lan.flextime.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.SparseArray;
@@ -16,13 +18,16 @@ import java.util.Collections;
 import java.util.List;
 
 import dong.lan.flextime.Config;
+import dong.lan.flextime.Interface.ItemTouchListener;
 import dong.lan.flextime.Interface.onItemClickListener;
 import dong.lan.flextime.R;
 import dong.lan.flextime.bean.ToDoItem;
 import dong.lan.flextime.bean.Todo;
 import dong.lan.flextime.dao.TodoDao;
+import dong.lan.flextime.db.DBManager;
 import dong.lan.flextime.utils.SP;
 import dong.lan.flextime.utils.TimeUtil;
+import dong.lan.flextime.utils.TodoManager;
 
 /**
  * 项目：FlexTime
@@ -33,11 +38,10 @@ import dong.lan.flextime.utils.TimeUtil;
  * 日程信息的 RecyclerView Adapter
  *
  */
-public class MainTodoAdapter extends RecyclerView.Adapter<MainTodoAdapter.VHolder> {
+public class MainTodoAdapter extends RecyclerView.Adapter<MainTodoAdapter.VHolder> implements ItemTouchListener {
 
     public static final int CLICK = 0;          //单击
     public static final int LONG_CLICK = 1;     //长按
-    public static final int DRAG = 2;           //拖动
     private boolean isMain;                     //是否是主日程列表的日程
     private boolean isGoodStatus;               //用户状态
     List<Todo> todos = new ArrayList<>();       //日程
@@ -148,14 +152,6 @@ public class MainTodoAdapter extends RecyclerView.Adapter<MainTodoAdapter.VHolde
                     listener.itemClick(todo, holder.getLayoutPosition(), CLICK,isMain);
                 }
             });
-
-            holder.parent.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    listener.itemClick(todo, holder.getLayoutPosition(), LONG_CLICK, isMain);
-                    return false;
-                }
-            });
         }
     }
 
@@ -191,6 +187,34 @@ public class MainTodoAdapter extends RecyclerView.Adapter<MainTodoAdapter.VHolde
     @Override
     public int getItemCount() {
         return todos.size();
+    }
+
+    @Override
+    public void onItemMoved(int fromPos, int toPos) {
+        Collections.swap(todos, fromPos, toPos);
+        notifyItemMoved(fromPos, toPos);
+        TodoManager.resortWithSwap(todos.get(fromPos),todos.get(toPos));
+    }
+
+    @Override
+    public void onItemSwiped(final int pos) {
+        new AlertDialog.Builder(context, R.style.MyDialogStyleTop)
+                .setTitle("你确定删除此个日程安排吗？")
+                .setMessage("删除后将不能恢复！！")
+                .setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        DBManager.getManager().deleteTodo(todos.get(pos).getId());
+                        deleteTodo(pos);
+                    }
+                })
+                .setNegativeButton("否", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        notifyItemChanged(pos);
+                    }
+                })
+                .show();
     }
 
     static class VHolder extends RecyclerView.ViewHolder {

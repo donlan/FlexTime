@@ -3,7 +3,9 @@ package dong.lan.flextime.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
+import dong.lan.flextime.BuildConfig;
 import dong.lan.flextime.dao.ToDoItemDao;
 
 /**
@@ -60,7 +62,11 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(TODO_TABLE);
         db.execSQL(CREATE_TIME_TABLE);
         db.execSQL(CREATE_KEYWORD_TABLE);
-
+        try {
+            db.execSQL(SORT_TABLE);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void closeDB() {
@@ -77,8 +83,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if(newVersion==2){
-            db.execSQL(SORT_TABLE);
+        if(newVersion==2 || oldVersion==1){
+            try {
+                db.execSQL(SORT_TABLE);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
+        if (BuildConfig.DEBUG) Log.d("DBHelper", "oldVersion:" + oldVersion+"   newVersion:"+newVersion);
     }
 }
