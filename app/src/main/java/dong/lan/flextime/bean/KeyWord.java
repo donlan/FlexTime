@@ -1,17 +1,21 @@
 package dong.lan.flextime.bean;
 
 import cn.bmob.v3.BmobObject;
+import io.realm.RealmObject;
 
 /**
  * 项目：FlexTime
  * 作者：梁桂栋
  * 日期： 3/13/2016  15:10.
  */
-public class KeyWord extends BmobObject {
+public class KeyWord extends RealmObject {
+
+    public static final String WORD = "word";
+
     private String word;
-    private String time;
-    private String imp;
-    private String urg;
+    private long time;
+    private int imp;
+    private int urg;
 
     public String getWord() {
         return word;
@@ -21,27 +25,27 @@ public class KeyWord extends BmobObject {
         this.word = word;
     }
 
-    public String getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(long time) {
         this.time = time;
     }
 
-    public String getImp() {
+    public int getImp() {
         return imp;
     }
 
-    public void setImp(String imp) {
+    public void setImp(int imp) {
         this.imp = imp;
     }
 
-    public String getUrg() {
+    public int getUrg() {
         return urg;
     }
 
-    public void setUrg(String urg) {
+    public void setUrg(int urg) {
         this.urg = urg;
     }
 }

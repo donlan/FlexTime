@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.util.Log;
 
 import dong.lan.flextime.BuildConfig;
-import dong.lan.flextime.db.DBManager;
 import dong.lan.flextime.services.WorkService;
 
 /**
@@ -17,8 +16,7 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if(intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED))
         {
-            DBManager.getManager().init(context);
-            context.startService(new Intent(context, WorkService.class));
+//            context.startService(new Intent(context, WorkService.class));
             if (BuildConfig.DEBUG) Log.d("BootReceiver", "开机启动服务");
         }
     }

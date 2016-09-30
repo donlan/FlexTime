@@ -12,8 +12,10 @@ import android.widget.TextView;
 import dong.lan.flextime.Config;
 import dong.lan.flextime.Interface.OrderTodoItemClick;
 import dong.lan.flextime.R;
-import dong.lan.flextime.bean.ToDoItem;
+import dong.lan.flextime.bean.RealmToDoItem;
 import dong.lan.flextime.utils.TimeUtil;
+import dong.lan.flextime.utils.TodoUtil;
+import io.realm.RealmList;
 
 /**
  * 项目：FlexTime
@@ -26,8 +28,7 @@ import dong.lan.flextime.utils.TimeUtil;
 public class OrderTodoAdapter extends RecyclerView.Adapter<OrderTodoAdapter.Holder> {
 
     LayoutInflater inflater ;
-    SparseArray<ToDoItem> items;
-    StringBuilder sb;
+    RealmList<RealmToDoItem> items;
     OrderTodoItemClick orderTodoItemClick;
 
     public void setOnOrderTodoClick(OrderTodoItemClick itemClick)
@@ -36,11 +37,10 @@ public class OrderTodoAdapter extends RecyclerView.Adapter<OrderTodoAdapter.Hold
     }
 
 
-    public OrderTodoAdapter(Context context, SparseArray<ToDoItem> items)
+    public OrderTodoAdapter(Context context, RealmList<RealmToDoItem> items)
     {
         this.items = items;
         inflater = LayoutInflater.from(context);
-        sb = new StringBuilder();
     }
 
     @Override
@@ -52,26 +52,11 @@ public class OrderTodoAdapter extends RecyclerView.Adapter<OrderTodoAdapter.Hold
     public void onBindViewHolder(final Holder holder, final int position) {
         holder.seq.setText(String.valueOf(position+1));
 
-        final ToDoItem toDoItem = items.get(position);
-        long time = Config.STATUS==Config.GOOD ? toDoItem.getFinishTime(): toDoItem.getDeadline();
-        sb.delete(0, sb.length());
-        sb.append("<html><body><h5>");
-        sb.append(toDoItem.getInfo());
-        sb.append("</h5>");
-        sb.append("<p>");
-        sb.append(TimeUtil.getRemainTime(time));
-        sb.append("</p>");
-        sb.append(TimeUtil.getStartTimeGap(toDoItem.getStartTime(),toDoItem.getNeedTime()));
-        sb.append("</p>");
-        sb.append("重要  ");
-        sb.append(toDoItem.getImportant());
-        sb.append("  紧急  ");
-        sb.append(toDoItem.getUrgent());
-        sb.append("</p>");
-        sb.append("</body></html>");
+        final RealmToDoItem toDoItem = items.get(position);
+        long time = Config.STATUS==Config.GOOD ? toDoItem.finishTime: toDoItem.deadline;
+        time = time - System.currentTimeMillis();
 
-        holder.info.setText(Html.fromHtml(sb.toString()));
-
+        holder.info.setText(Html.fromHtml(TodoUtil.getTodoItemInfo(toDoItem)));
 
         if(orderTodoItemClick!=null)
         {
@@ -88,20 +73,16 @@ public class OrderTodoAdapter extends RecyclerView.Adapter<OrderTodoAdapter.Hold
     @Override
     public int getItemCount() {
 
-        return items.size();
+        return items==null ? 0 : items.size();
     }
-
-
-    public void add(ToDoItem item)
+    public void add(RealmToDoItem item)
     {
-
-        items.put(items.size(),item);
+        items.add(items.size(),item);
         notifyDataSetChanged();
     }
 
     static class Holder extends RecyclerView.ViewHolder
     {
-
         TextView seq;
         TextView info;
         public Holder(View itemView) {

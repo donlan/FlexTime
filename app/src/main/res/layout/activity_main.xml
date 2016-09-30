@@ -12,11 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <include
-        layout="@layout/homepage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="start" />
+
 
     <include
         layout="@layout/draw_right"

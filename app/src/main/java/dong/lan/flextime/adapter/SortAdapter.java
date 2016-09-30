@@ -13,6 +13,7 @@ import java.util.List;
 import dong.lan.flextime.Interface.SortSelectListener;
 import dong.lan.flextime.R;
 import dong.lan.flextime.bean.Sort;
+import io.realm.Realm;
 
 /**
  * 项目：FlexTime
@@ -52,10 +53,13 @@ public class SortAdapter extends RecyclerView.Adapter<SortAdapter.Holder> {
             public void onClick(View v) {
 
                 if (holder.checkBox.isChecked()) {
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
                     sort.setSelect(true);
                     last.setSelect(false);
                     notifyItemChanged(sorts.indexOf(last));
                     last = sort;
+                    realm.commitTransaction();
                     if (listener != null)
                         listener.onSortSelect(sort);
                 }

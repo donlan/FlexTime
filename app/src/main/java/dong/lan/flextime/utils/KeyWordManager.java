@@ -11,7 +11,7 @@ import java.util.Map;
 
 import dong.lan.flextime.BuildConfig;
 import dong.lan.flextime.bean.KeyWord;
-import dong.lan.flextime.db.DBManager;
+import io.realm.Realm;
 
 /**
  * 项目：FlexTime
@@ -19,7 +19,6 @@ import dong.lan.flextime.db.DBManager;
  * 日期： 3/27/2016  15:10.
  */
 public class KeyWordManager {
-    private static Map<String, String> map = new HashMap<>();
     private volatile static KeyWordManager manager;
 
     private KeyWordManager(){}
@@ -36,7 +35,7 @@ public class KeyWordManager {
     /*
         用BreakIterator实现的简单分词
      */
-    public Map<String,String> searchRecom(String text,TextView textView) {
+    public Map<String,String> searchRecom(Map<String,String> map,String text,TextView textView) {
         map.clear();
         BreakIterator iterator = BreakIterator.getWordInstance(Locale.CHINA);
         iterator.setText(text);
@@ -50,7 +49,6 @@ public class KeyWordManager {
         if (!map.isEmpty()) {
             showRecommend(map, textView);
         }
-        if (BuildConfig.DEBUG) Log.d("KeyWordManager", map.toString());
         return map;
     }
 
@@ -59,12 +57,13 @@ public class KeyWordManager {
      */
     public void showRecommend(Map<String, String> map, TextView textView) {
         StringBuilder sb = new StringBuilder();
+        Realm realm = Realm.getDefaultInstance();
         for (String key : map.keySet()) {
-            KeyWord keyword = DBManager.getManager().getKeyword(key);
+            KeyWord keyword = realm.where(KeyWord.class).equalTo(KeyWord.WORD,key).findFirst();
             if (keyword != null) {
                 sb.append(keyword.getWord());
                 sb.append("  平均时长： ");
-                sb.append(TimeUtil.defaultNeedFormat(Long.parseLong(keyword.getTime())));
+                sb.append(TimeUtil.defaultNeedFormat(keyword.getTime()));
                 sb.append("\n");
             }
         }

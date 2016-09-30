@@ -1,21 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/item_todo_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/circle_rect_level_1"
-    android:orientation="vertical"
-    >
+    android:layout_height="wrap_content">
 
 
-    <TextView
-        android:layout_marginTop="20dp"
-        android:id="@+id/item_todo_Info"
+    <android.support.v7.widget.CardView
+        android:id="@+id/item_todo_parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center|start"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textSize="18sp" />
+        android:layout_margin="12dp"
+        android:orientation="vertical"
+        app:cardBackgroundColor="@color/md_white_1000"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:cardPreventCornerOverlap="true"
+        app:contentPadding="6dp">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <TextView
+                android:id="@+id/item_left"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:gravity="center"
+                android:text="▲"
+                android:background="@drawable/circle_button_green"
+                android:textColor="@color/md_white_1000"
+                android:textSize="20sp" />
+
+            <TextView
+                android:background="@drawable/circle_button_red"
+                android:id="@+id/item_right"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:text="×"
+                android:textColor="@color/md_white_1000"
+                android:textSize="20sp" />
+
+            <View
+                android:id="@+id/line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/item_left"
+                android:layout_marginTop="10dp"
+                android:background="@color/md_light_green_200" />
+
+            <TextView
+                android:id="@+id/item_todo_Info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/line"
+                android:layout_marginTop="10dp"
+                android:gravity="center|start"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textSize="18sp" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 </RelativeLayout>

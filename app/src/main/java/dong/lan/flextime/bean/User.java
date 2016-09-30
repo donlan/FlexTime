@@ -3,7 +3,10 @@ package dong.lan.flextime.bean;
 import cn.bmob.v3.BmobUser;
 
 /**
- * Created by 梁桂栋 on 2015/12/7.
+ * Created by 梁桂栋 on 2016年09月01日 00:51.
+ * Email:760625325@qq.com
+ * GitHub: https://gitbub.com/donlan
+ * description:
  */
 public class User extends BmobUser {
     private boolean sex;        //性别
@@ -15,6 +18,16 @@ public class User extends BmobUser {
     {
         setUsername(name);
     }
+
+    public User(String id,String name,String password,boolean sex, String des, String tag) {
+        setObjectId(id);
+        setPassword(password);
+        setUsername(name);
+        this.sex = sex;
+        this.des = des;
+        this.tag = tag;
+    }
+
     public boolean isSex() {
         return sex;
     }

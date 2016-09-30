@@ -14,16 +14,16 @@ import android.util.SparseArray;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.List;
 
-import de.greenrobot.event.EventBus;
 import dong.lan.flextime.BuildConfig;
 import dong.lan.flextime.Config;
 import dong.lan.flextime.bean.ToDoEvent;
-import dong.lan.flextime.bean.ToDoItem;
+import dong.lan.flextime.bean.RealmToDoItem;
 import dong.lan.flextime.bean.Todo;
-import dong.lan.flextime.dao.TodoDao;
-import dong.lan.flextime.db.DBManager;
 import dong.lan.flextime.receiver.WorkReceiver;
 import dong.lan.flextime.utils.SP;
 import dong.lan.flextime.utils.TodoManager;
@@ -64,26 +64,26 @@ public class WorkService extends Service {
                             break;
                         }
                         //状态栏提醒，并更新日程的权重（ * 1.5）
-                        if (TodoManager.get().isTodoItemStartTips(todo,timeDelay )) {
-                            values.put(TodoDao.WEIGHT, String.valueOf((todo.getWeight() * 1.5)));
-                            values.put(TodoDao.FLAG, TodoDao.FLAG_DOIT);
-                            DBManager.getManager().updateTodo(values, todo.getId());
-                            EventBus.getDefault().post(new ToDoEvent(todo,ToDoEvent.TODO_NOTIFY,0));
-                            c++;
-                        }
-                        //将超时日程移动到过期日程列表的事件回调
-                        if (TodoManager.get().isTodoTimeOut(todo)) {
-                            EventBus.getDefault().post(new ToDoEvent(todo,ToDoEvent.ONTIME_TO_TIMEOUT,0));
-                        }
-                        SparseArray<ToDoItem> items = todo.getTodos();
-                        for(int i = 0;i<items.size();i++) {
-                            ToDoItem item = items.get(i);
-                            if (item.getPoint() != null) {
-                                if (DistanceUtil.getDistance(latLng, new LatLng(item.getPoint().getLatitude(), item.getPoint().getLongitude())) < 1000) {
-                                    EventBus.getDefault().post(new ToDoEvent(todo, ToDoEvent.NEAR_NOTIFY, i));
-                                }
-                            }
-                        }
+//                        if (TodoManager.get().isTodoItemStartTips(todo,timeDelay )) {
+//                            values.put(TodoDao.WEIGHT, String.valueOf((todo.getWeight() * 1.5)));
+//                            values.put(TodoDao.FLAG, TodoDao.FLAG_DOIT);
+//                            DBManager.getManager().updateTodo(values, todo.getId());
+//                            EventBus.getDefault().post(new ToDoEvent(todo,ToDoEvent.TODO_NOTIFY,0));
+//                            c++;
+//                        }
+//                        //将超时日程移动到过期日程列表的事件回调
+//                        if (TodoManager.get().isTodoTimeOut(todo)) {
+//                            EventBus.getDefault().post(new ToDoEvent(todo,ToDoEvent.ONTIME_TO_TIMEOUT,0));
+//                        }
+//                        SparseArray<RealmToDoItem> items = todo.getTodos();
+//                        for(int i = 0;i<items.size();i++) {
+//                            RealmToDoItem item = items.get(i);
+//                            if (item.getPoint() != null) {
+//                                if (DistanceUtil.getDistance(latLng, new LatLng(item.getPoint().getLatitude(), item.getPoint().getLongitude())) < 1000) {
+//                                    EventBus.getDefault().post(new ToDoEvent(todo, ToDoEvent.NEAR_NOTIFY, i));
+//                                }
+//                            }
+//                        }
                     }
                         EventBus.getDefault().post(new ToDoEvent(null, ToDoEvent.REFRESH_TODO, 0));
                 }
@@ -104,7 +104,7 @@ public class WorkService extends Service {
         timeDelay = SP.getAlertDelay()*60000;
         values = new ContentValues();
     }
-
+    @Subscribe
     public void onEventMainThread(LatLng latLng) {
         this.latLng = latLng;
         if (BuildConfig.DEBUG) Log.d("WorkService", latLng.toString());

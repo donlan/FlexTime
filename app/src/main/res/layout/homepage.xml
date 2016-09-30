@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/md_white_1000"
+    android:fitsSystemWindows="true"
     android:focusable="true"
     android:orientation="vertical">
 
@@ -46,47 +47,42 @@
 
     </LinearLayout>
 
-    <LinearLayout
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="状态"
+        android:textSize="18sp" />
+
+
+    <RadioGroup
+        android:id="@+id/status_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:gravity="center"
         android:orientation="horizontal">
 
-        <TextView
+
+        <RadioButton
+            android:id="@+id/status_good"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:drawableLeft="@mipmap/dot_grey"
-            android:gravity="center"
-            android:text="状态"
-            android:textSize="18sp" />
-
-
-        <RadioGroup
-            android:id="@+id/status_group"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="left"
-            android:orientation="horizontal">
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:checked="true"
+            android:text="状态倍棒" />
 
-
-            <RadioButton
-                android:id="@+id/status_good"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:checked="true"
-                android:text="状态倍棒" />
-
-            <RadioButton
-                android:id="@+id/status_bad"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="不在状态" />
-        </RadioGroup>
-    </LinearLayout>
+        <RadioButton
+            android:id="@+id/status_bad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="不在状态" />
+    </RadioGroup>
 
     <TextView
         android:layout_width="match_parent"
@@ -106,22 +102,22 @@
 
         <RadioButton
             android:id="@+id/mode_work"
-            android:text="工作\n模式"
-            style="@style/mode_check" />
+            style="@style/mode_check"
+            android:text="工作\n模式" />
 
 
         <RadioButton
-            android:checked="true"
+            android:id="@+id/mode_normal"
+            style="@style/mode_check"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:id="@+id/mode_normal"
-            android:text="休闲\n模式"
-            style="@style/mode_check" />
+            android:checked="true"
+            android:text="休闲\n模式" />
 
         <RadioButton
             android:id="@+id/mode_busy"
-            android:text="忙碌\n模式"
-            style="@style/mode_check" />
+            style="@style/mode_check"
+            android:text="忙碌\n模式" />
     </RadioGroup>
 
     <View
@@ -136,44 +132,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:columnCount="2"
-            android:rowCount="3">
 
-            <TextView
-                android:id="@+id/drawer_setting"
-                style="@style/draw_text_item"
-                android:text="设置"
-                />
-
-            <TextView
-                android:id="@+id/drawer_statistic"
-                android:text="个人统计"
-                style="@style/draw_text_item" />
-
-            <TextView
-                android:id="@+id/drawer_sync"
-                android:text="同步"
-                style="@style/draw_text_item" />
-
-            <TextView
-                android:id="@+id/drawer_offline_map"
-                style="@style/draw_text_item"
-                android:text="离线地图"
-                />
-
-            <TextView
-                android:id="@+id/drawer_reset_weight"
-                style="@style/draw_text_item"
-                android:text="权重因子"
-                />
-            <TextView
-                android:id="@+id/drawer_sort"
-                style="@style/draw_text_item"
-                android:text="排序设置"
-                />
-        </GridLayout>
     </ScrollView>
 </LinearLayout>

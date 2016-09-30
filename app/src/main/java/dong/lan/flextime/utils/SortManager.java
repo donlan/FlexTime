@@ -1,7 +1,7 @@
 package dong.lan.flextime.utils;
 
 import dong.lan.flextime.Config;
-import dong.lan.flextime.bean.ToDoItem;
+import dong.lan.flextime.bean.RealmToDoItem;
 
 /**
  * 项目：FlexTime
@@ -25,7 +25,7 @@ public class SortManager {
     /*
     根据 Tag标签选择排序算法
      */
-    public static double getSortWeight(ToDoItem toDoItem) {
+    public static double getSortWeight(RealmToDoItem toDoItem) {
 
         return sortByTag(TAG, toDoItem);
 
@@ -36,17 +36,17 @@ public class SortManager {
         URG = urg;
     }
 
-    public static double sortByTag(int tag, ToDoItem toDoItem) {
+    public static double sortByTag(int tag, RealmToDoItem toDoItem) {
         switch (tag) {
             case 0:
-                return (toDoItem.getImportant() * IMP + URG * toDoItem.getUrgent());
+                return (toDoItem.important * IMP + URG * toDoItem.urgent);
             case 1:
-                return (toDoItem.getImportant() * IMP + URG * toDoItem.getUrgent()) * Config.getLevelFactor(toDoItem.getStatus());
+                return (toDoItem.important * IMP + URG * toDoItem.urgent) * Config.getLevelFactor(toDoItem.status);
             case 2:
-                double d = (toDoItem.getStartTime() - System.currentTimeMillis())/toDoItem.getNeedTime();
-                return (toDoItem.getImportant() * IMP + URG * toDoItem.getUrgent()) * Config.getLevelFactor(toDoItem.getStatus()) * d;
+                double d = (toDoItem.startTime - System.currentTimeMillis())/toDoItem.needTime;
+                return (toDoItem.important * IMP + URG * toDoItem.urgent) * Config.getLevelFactor(toDoItem.status) * d;
             default:
-                return (toDoItem.getImportant() * IMP + URG * toDoItem.getUrgent()) * Config.getLevelFactor(toDoItem.getStatus());
+                return (toDoItem.important * IMP + URG * toDoItem.urgent) * Config.getLevelFactor(toDoItem.status);
         }
     }
 }

@@ -1,6 +1,6 @@
 package dong.lan.flextime.Interface;
 
-import dong.lan.flextime.bean.ToDoItem;
+import dong.lan.flextime.bean.RealmToDoItem;
 
 /**
  * 项目：FlexTime
@@ -8,5 +8,5 @@ import dong.lan.flextime.bean.ToDoItem;
  * 日期： 3/28/2016  04:53.
  */
 public interface OrderTodoItemClick {
-    void onItemClick(ToDoItem item,int index);
+    void onItemClick(RealmToDoItem item, int index);
 }

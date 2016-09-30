@@ -7,8 +7,8 @@
     <string name="action_settings">Settings</string>
     <string name="search_offline_city">搜索需要下载的离线城市</string>
     <string name="set_need_time">未设置效果时长</string>
-    <string name="set_finish_time">设置截至最佳时间</string>
-    <string name="set_deadline">设置最晚截止时间</string>
+    <string name="set_finish_time">截至最佳时间:</string>
+    <string name="set_deadline">最晚截止时间:</string>
     <string name="dialog_set_delay_text">设置日程开始提醒的间隔</string>
     <string name="todo_level2_text">日程第二梯队的最大日程数：</string>
     <string name="todo_level1_text">日程第一梯队的最大日程数：</string>
@@ -19,4 +19,16 @@
     <string name="start_schedule_your_time">自动给你安排日程</string>
     <string name="start_easy_manage_time">日程安排更轻松</string>
     <string name="exit">退出</string>
+    <string name="title_activity_main_todo">MainTodoActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="user_statistics">Statistics</string>
+    <string name="set_sort">Sort</string>
+    <string name="weight_factor">Weight Factor</string>
+    <string name="offline_map">Offline Map</string>
+    <string name="sync">Synchronization</string>
+    <string name="no_content">No Content...</string>
+    <string name="delete">Delete</string>
+    <string name="backmain">BackMain</string>
+    <string name="urgent">紧急:</string>
+    <string name="important">重要:</string>
 </resources>

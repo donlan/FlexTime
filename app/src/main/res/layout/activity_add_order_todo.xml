@@ -7,11 +7,9 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -262,7 +260,7 @@
             android:layout_height="50dp"
             android:layout_gravity="bottom|right"
             android:layout_margin="16dp"
-            android:background="@color/md_indigo_700"
+            android:background="@drawable/circle_button_green"
             android:gravity="center"
             android:text="1"
             android:textColor="@color/md_white_1000"

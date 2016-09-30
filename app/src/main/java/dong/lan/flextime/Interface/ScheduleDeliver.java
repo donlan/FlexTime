@@ -1,6 +1,6 @@
 package dong.lan.flextime.Interface;
 
-import dong.lan.flextime.bean.ToDoItem;
+import dong.lan.flextime.bean.RealmToDoItem;
 
 /**
  * 项目：FlexTime
@@ -8,5 +8,5 @@ import dong.lan.flextime.bean.ToDoItem;
  * 日期： 2016/2/10  14:13.
  */
 public interface ScheduleDeliver {
-    void onScheduleDelivering(int tag,ToDoItem toDoItem);
+    void onScheduleDelivering(int tag,RealmToDoItem toDoItem);
 }

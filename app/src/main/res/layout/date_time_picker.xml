@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+   <RelativeLayout
+       android:background="@color/colorPrimary"
+       android:orientation="horizontal"
+       android:layout_width="match_parent"
+       android:layout_height="?attr/actionBarSize">
+       <TextView
+           android:id="@+id/left"
+           android:layout_width="?attr/actionBarSize"
+           android:layout_height="?attr/actionBarSize"
+           android:gravity="center"
+           android:text="返回"
+           android:textColor="@color/md_white_1000"
+           android:textSize="18sp" />
+
+       <RadioGroup
+           android:id="@+id/dateTimeCheck"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:layout_marginLeft="?attr/actionBarSize"
+           android:layout_marginRight="?attr/actionBarSize"
+           android:gravity="center"
+           android:orientation="horizontal"
+           android:textSize="20sp" >
+           <RadioButton
+               android:id="@+id/dateCheck"
+               android:layout_margin="4dp"
+               android:text="日期"
+               android:gravity="center"
+               android:checked="true"
+               android:background="@drawable/date_time_checkbox"
+               android:textColor="@color/md_green_800"
+               android:button="@null"
+               android:layout_width="40dp"
+               android:layout_height="40dp" />
+           <RadioButton
+               android:id="@+id/timeCheck"
+               android:layout_margin="4dp"
+               android:text="时刻"
+               android:gravity="center"
+               android:checked="false"
+               android:background="@drawable/date_time_checkbox"
+               android:textColor="@color/md_green_800"
+               android:button="@null"
+               android:layout_width="40dp"
+               android:layout_height="40dp" />
+
+       </RadioGroup>
+
+       <TextView
+           android:id="@+id/right"
+           android:layout_width="?attr/actionBarSize"
+           android:layout_height="?attr/actionBarSize"
+           android:layout_alignParentRight="true"
+           android:gravity="center"
+           android:text="完成"
+           android:textColor="@color/md_white_1000"
+           android:textSize="18sp" />
+   </RelativeLayout>
+    <ViewFlipper
+        android:id="@+id/switcher"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <DatePicker
+            android:id="@+id/datePicker"
+            android:headerBackground="@color/colorPrimary"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <TimePicker
+            android:headerBackground="@color/colorPrimary"
+            android:id="@+id/timePicker"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </ViewFlipper>
+</LinearLayout>

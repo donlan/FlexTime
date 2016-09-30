@@ -23,6 +23,11 @@ public class TimeUtil {
     private static StringBuffer sb = new StringBuffer();
 
 
+    public static long getNeedLong(int day, int hours, int minute) {
+        return (day * DAY + hours * HOUR + MINUTE * minute) * MILI;
+    }
+
+
     /**
      * 获取当前日期的指定格式的字符串
      *
@@ -41,6 +46,8 @@ public class TimeUtil {
     // date类型转换为String类型
     // formatType格式为yyyy-MM-dd HH:mm:ss//yyyy年MM月dd日 HH时mm分ss秒
     public static String dateToString(Date data, String formatType) {
+        if (data == null)
+            return "";
         return new SimpleDateFormat(formatType).format(data);
     }
 
@@ -159,13 +166,12 @@ public class TimeUtil {
     public static String getRemainTime(long time) {
 
         StringBuilder sb = new StringBuilder();
-        long gap = (time - System.currentTimeMillis()) / 1000;
+        long gap = (time) / 1000;
         if (gap < 0) {
-            sb.append("已超过完成期限: ");
+            sb.append("(超期)");
             gap = 0 - gap;
-        } else {
-            sb.append("距日程结束还有: ");
         }
+
         int y;
         int mon;
         int d;
@@ -203,13 +209,6 @@ public class TimeUtil {
 
     /**
      * 获取聊天时间：因为sdk的时间默认到秒故应该乘1000
-     *
-     * @param @param  timesamp
-     * @param @return
-     * @return String
-     * @throws
-     * @Title: getChatTime
-     * @Description: TODO
      */
     public static String getChatTime(long timesamp) {
         long clearTime = timesamp * 1000;
@@ -253,27 +252,25 @@ public class TimeUtil {
         }
     }
 
-    public static String defaultFormat(long time)
-    {
-        return longToString(time,FORMAT_DATA_TIME_SECOND);
+    public static String defaultFormat(long time) {
+        return longToString(time, FORMAT_DATA_TIME_SECOND);
     }
 
-    public static String defaultNeedFormat(long time)
-    {
-        time = time/1000;
+    public static String defaultNeedFormat(long time) {
+        time = time / 1000;
         StringBuilder sb = new StringBuilder();
-        int d = (int) (time/DAY);
-        time = (time-DAY*d);
-        int h = (int) (time/HOUR);
-        time = (time-HOUR*h);
-        int m = (int) (time/MINUTE);
+        int d = (int) (time / DAY);
+        time = (time - DAY * d);
+        int h = (int) (time / HOUR);
+        time = (time - HOUR * h);
+        int m = (int) (time / MINUTE);
         sb.append(d);
         sb.append("天 ");
         sb.append(Math.abs(h));
         sb.append("小时 ");
         sb.append(Math.abs(m));
         sb.append("分");
-         return sb.toString();
+        return sb.toString();
     }
 
     public static long getLongNeedTime(String needTime) {
@@ -330,7 +327,7 @@ public class TimeUtil {
     }
 
 
-    public static String getStartTimeGap(long startTime,long needTime) {
+    public static String getStartTimeGap(long startTime, long needTime) {
         sb.delete(0, sb.length());
         long time = (startTime - System.currentTimeMillis());
 //        int d;
@@ -345,7 +342,7 @@ public class TimeUtil {
             sb.append("距开始还有 ");
         } else {
             sb.append("已开始 ");
-           // time = 0 - time;
+            // time = 0 - time;
         }
 //        d = (int) (time / DAY);
 //        time = time - d * DAY;

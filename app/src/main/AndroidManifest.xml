@@ -3,7 +3,7 @@
     package="dong.lan.flextime">
 
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -17,8 +17,6 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
-
 
     <supports-screens
         android:anyDensity="true"
@@ -35,7 +33,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name=".activity.Welcome"
+            android:name=".view.Welcome"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,22 +41,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity" />
         <activity
-            android:name=".activity.AddTodoActivity"
+            android:name=".view.handleTodo.AddTodoActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:taskAffinity="" />
-        <activity android:name=".activity.CustomSortActivity"/>
-        <activity android:name=".activity.AddMapLocActivity" />
-        <activity android:name=".activity.BaseActivity" />
-        <activity android:name=".activity.OfflineMapActivity" />
-        <activity android:name=".activity.SettingActivity"/>
-        <activity android:name=".activity.SetTodoLevelActivity"/>
-        <activity android:name=".activity.LoginActivity"/>
-        <activity android:name=".activity.DefineFactorActivity" android:theme="@style/DialogActivity"/>
-        <activity android:name=".activity.AddOrderTodoActivity"/>
-        <activity android:name=".activity.UserCenterActivity"/>
+        <activity android:name=".view.config.CustomSortActivity" />
+        <activity android:name=".view.map.AddMapLocActivity" />
+        <activity android:name=".view.map.OfflineMapActivity" />
+        <activity android:name=".view.config.SettingActivity" />
+        <activity android:name=".view.config.SetTodoLevelActivity" />
+        <activity android:name=".view.login.LoginActivity" />
+        <activity android:name=".view.config.DefineFactorActivity"
+            android:theme="@style/factor_activity"/>
+        <activity android:name=".view.handleTodo.AddOrderTodoActivity" />
+        <activity android:name=".view.UserCenterActivity" />
+
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="AQ3AS51W3DdVfzwAj9BwNsLO" />
@@ -66,27 +64,34 @@
         <receiver android:name=".receiver.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".receiver.WorkReceiver"/>
+        <receiver android:name=".receiver.WorkReceiver" />
+
         <service android:name=".services.WorkService" />
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote"/>
-        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+            android:process=":remote" />
+        <!--
+             ATTENTION: This was auto-generated to add Google Play services to your project for
+             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="BMOB_CHANNEL"
+            android:value="Channel ID" />
 
-        <meta-data android:value="Channel ID" android:name="BMOB_CHANNEL"/>
         <activity
             android:name="cn.bmob.v3.update.UpdateDialogActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
-        </activity>
-
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name=".view.home.MainTodoActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

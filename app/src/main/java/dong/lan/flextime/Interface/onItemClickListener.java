@@ -8,5 +8,5 @@ import dong.lan.flextime.bean.Todo;
  * 日期： 3/28/2016  12:12.
  */
 public interface onItemClickListener {
-    void itemClick(Todo todo, int pos, int type, boolean isMain);
+    void itemClick(Todo todo, int pos, int type);
 }

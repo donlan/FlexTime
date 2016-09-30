@@ -1,11 +1,13 @@
 package dong.lan.flextime.bean;
 
+import io.realm.RealmObject;
+
 /**
  * 项目：FlexTime
  * 作者：梁桂栋
  * 日期： 4/29/2016  12:53.
  */
-public class Sort {
+public class Sort extends RealmObject {
     private boolean isSelect;
     private String method;
     private int tag;
